@@ -3,7 +3,8 @@ package app
 import (
 	"fmt"
 	"tracker/internal/config"
-	"tracker/internal/delivery/handler"
+	"tracker/internal/handler"
+	jwt "tracker/pkg/middleware"
 	"tracker/internal/repository"
 	"tracker/internal/usecase"
 
@@ -38,7 +39,10 @@ func NewApp(c *config.Config) (*App, error) {
 	}
 
 	ur := repository.NewUserRepository(db)
-	us := usecase.NewUserUseCase(ur)
+	redisRepo := repository.NewRedisRepo(c)
+	jwtService := jwt.NewJwt([]byte(c.JWTKey))
+	
+	us := usecase.NewUserUseCase(ur,redisRepo, jwtService)
 	uh := handler.NewUserHandler(us)
 
 	router := gin.Default()

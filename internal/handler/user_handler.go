@@ -62,10 +62,10 @@ func (uh *UserHandler) HandlerLogin(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"messgae": "login successful",
+		"token": user.Jwt,
 		"user": gin.H{
 			"id": user.ID,
 			"login": user.Login,
 		},
-		"token": "JWT token",
 	})
 }

@@ -16,6 +16,7 @@ type Config struct {
 	RedisPort	string
 	RedisPass 	string
 	GinAddr	string
+	JWTKey string
 }
 
 func NewConfig() *Config {
@@ -35,5 +36,6 @@ func NewConfig() *Config {
 		RedisPort: os.Getenv("REDIS_PORT"),
 		RedisPass: os.Getenv("REDIS_PASS"),
 		GinAddr: os.Getenv("GIN_ADDR"),
+		JWTKey: os.Getenv("JWT_KEY"),
 	}
 }

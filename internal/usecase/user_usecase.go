@@ -2,19 +2,25 @@ package usecase
 
 import (
 	"errors"
+	"tracker/internal/dto"
 	"tracker/internal/entity"
 	"tracker/internal/repository"
+	jwt "tracker/pkg/middleware"
 
 	"gorm.io/gorm"
 )
 
 type UserUseCase struct{
 	userRepo *repository.UserRepository
+	redisRepo *repository.RedisRepo
+	jwtService *jwt.Jwt
 }
 
-func NewUserUseCase(userRepo *repository.UserRepository) *UserUseCase {
+func NewUserUseCase(userRepo *repository.UserRepository, redis *repository.RedisRepo, jwt *jwt.Jwt) *UserUseCase {
 	return &UserUseCase{
 		userRepo: userRepo,
+		redisRepo: redis,
+		jwtService: jwt,
 	}
 }
 
@@ -45,7 +51,7 @@ func (us *UserUseCase) Register(login, pass string) error {
 	return nil	
 }
 
-func (us *UserUseCase) Login(login, pass string) (*entity.User, error) {
+func (us *UserUseCase) Login(login, pass string) (*dto.UserSession, error) {
 	userDB, err := us.userRepo.GetByLogin(login)
 
 	if err != nil{
@@ -63,9 +69,27 @@ func (us *UserUseCase) Login(login, pass string) (*entity.User, error) {
 		return nil, errors.New("invalid password")
 	}
 
+	resp, err := us.jwtService.GenerateToken()
+	if err != nil{
+		return nil, err
+	}
+
+	session := &dto.UserSession{
+		ID: userDB.ID,
+		Login: userDB.Login,
+		Jwt: resp.Token,
+		RegisteredAt: userDB.RegisteredAt,
+		LastLogin: userDB.LastLogin,
+	}
+
+	err = us.redisRepo.SaveToken(resp.ID, session)
+	if err != nil{
+		return nil, err
+	}
+
 	if err := us.userRepo.UpdateLogin(login); err != nil{
 		return nil, err
 	}
 	
-	return userDB, nil
+	return session, nil
 }

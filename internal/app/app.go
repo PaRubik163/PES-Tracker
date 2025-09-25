@@ -71,4 +71,5 @@ func (a *App) setupRouter(){
 	api := a.Router.Group("/api/v1")
 	api.POST("/register", a.UserHandler.HandlerRegister) //user registration
 	api.POST("/login", a.UserHandler.HandlerLogin)	//user login
+	api.POST("/logout", a.UserHandler.HandlerLogout) //user logout
 }

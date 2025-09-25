@@ -69,3 +69,23 @@ func (uh *UserHandler) HandlerLogin(c *gin.Context) {
 		},
 	})
 }
+
+func (uh *UserHandler) HandlerLogout(c *gin.Context) {
+	token := c.GetHeader("Authorization")
+
+	if token == ""{
+		c.JSON(http.StatusUnauthorized, gin.H{"error" : "missing token"})
+		return
+	}
+
+	if len(token) > 7  && token[:7] == "Bearer "{
+		token = token[7:]
+	}
+
+	if err := uh.userUC.Logout(token); err != nil{
+		c.JSON(http.StatusInternalServerError, gin.H{"error" : err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message" : "logout successful"})
+}

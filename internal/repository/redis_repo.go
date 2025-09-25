@@ -27,7 +27,7 @@ func NewRedisRepo(c *config.Config) *RedisRepo{
 	return &RedisRepo{Redis: rdb}
 }
 
-func (r *RedisRepo) SaveToken(uuid string, userSession *dto.UserSession) error {
+func (r *RedisRepo) SaveUser(uuid string, userSession *dto.UserSession) error {
 	ctx := context.Background()
 
 	data, err := json.Marshal(userSession)
@@ -37,4 +37,10 @@ func (r *RedisRepo) SaveToken(uuid string, userSession *dto.UserSession) error {
 	}
 
 	return r.Redis.Set(ctx, uuid, data, 24 *time.Hour).Err()
+}
+
+func (r *RedisRepo) DeleteSession(uuid string) error {
+	ctx := context.Background()
+
+	return r.Redis.Del(ctx, uuid).Err()
 }

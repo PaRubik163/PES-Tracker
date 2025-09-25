@@ -30,7 +30,11 @@ func (us *UserUseCase) Register(login, pass string) error {
 		Password: pass,
 	}
 
-	if err := user.CheckLoginAndPassword(user.Login, user.Password); err != nil{
+	if err := user.CheckLogin(user.Login); err != nil{
+		return err
+	}
+
+	if err := user.CheckPassword(user.Password); err != nil{
 		return err
 	}
 
@@ -61,11 +65,11 @@ func (us *UserUseCase) Login(login, pass string) (*dto.UserSession, error) {
 		return nil, err
 	}
 
-	if err := userDB.CheckLoginAndPassword(login, pass); err != nil{
+	if err := userDB.CheckLogin(login); err != nil{
 		return nil, err
 	}
 
-	if ok := userDB.CheckPassword(pass); !ok{
+	if ok := userDB.CheckHashedPassword(pass); !ok{
 		return nil, errors.New("invalid password")
 	}
 
@@ -82,7 +86,7 @@ func (us *UserUseCase) Login(login, pass string) (*dto.UserSession, error) {
 		LastLogin: userDB.LastLogin,
 	}
 
-	err = us.redisRepo.SaveToken(resp.ID, session)
+	err = us.redisRepo.SaveUser(resp.ID, session)
 	if err != nil{
 		return nil, err
 	}
@@ -92,4 +96,20 @@ func (us *UserUseCase) Login(login, pass string) (*dto.UserSession, error) {
 	}
 	
 	return session, nil
+}
+
+func (us *UserUseCase) Logout(token string) error {
+
+	uuid, err := us.jwtService.ValidateToken(token)
+	if err != nil{
+		return err
+	}
+
+	err = us.redisRepo.DeleteSession(uuid)
+
+	if err != nil{
+		return err
+	}
+
+	return nil
 }

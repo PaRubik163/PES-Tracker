@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"errors"
+	"time"
 	"tracker/internal/dto"
 	"tracker/internal/entity"
 	"tracker/internal/repository"
@@ -28,6 +29,8 @@ func (us *UserUseCase) Register(login, pass string) error {
 	user := &entity.User{
 		Login: login,
 		Password: pass,
+		RegisteredAt: time.Now(),
+		LastLogin: time.Now(),
 	}
 
 	if err := user.CheckLogin(user.Login); err != nil{
@@ -82,8 +85,7 @@ func (us *UserUseCase) Login(login, pass string) (*dto.UserSession, error) {
 		ID: userDB.ID,
 		Login: userDB.Login,
 		Jwt: resp.Token,
-		RegisteredAt: userDB.RegisteredAt,
-		LastLogin: userDB.LastLogin,
+		CreateSessionAt: time.Now(),
 	}
 
 	err = us.redisRepo.SaveUser(resp.ID, session)

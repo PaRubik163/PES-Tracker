@@ -71,18 +71,12 @@ func (uh *UserHandler) HandlerLogin(c *gin.Context) {
 }
 
 func (uh *UserHandler) HandlerLogout(c *gin.Context) {
-	token := c.GetHeader("Authorization")
-
-	if token == ""{
-		c.JSON(http.StatusUnauthorized, gin.H{"error" : "missing token"})
-		return
+	uuid, exists := c.Get("uuid")
+	if !exists{
+		c.JSON(http.StatusUnauthorized, gin.H{"error":"invalid token"})
 	}
 
-	if len(token) > 7  && token[:7] == "Bearer "{
-		token = token[7:]
-	}
-
-	if err := uh.userUC.Logout(token); err != nil{
+	if err := uh.userUC.Logout(uuid.(string)); err != nil{
 		c.JSON(http.StatusInternalServerError, gin.H{"error" : err.Error()})
 		return
 	}

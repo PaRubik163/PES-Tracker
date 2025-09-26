@@ -6,7 +6,7 @@ import (
 	"tracker/internal/dto"
 	"tracker/internal/entity"
 	"tracker/internal/repository"
-	jwt "tracker/pkg/middleware"
+	jwt "tracker/pkg/jwt"
 
 	"gorm.io/gorm"
 )
@@ -100,14 +100,8 @@ func (us *UserUseCase) Login(login, pass string) (*dto.UserSession, error) {
 	return session, nil
 }
 
-func (us *UserUseCase) Logout(token string) error {
-
-	uuid, err := us.jwtService.ValidateToken(token)
-	if err != nil{
-		return err
-	}
-
-	err = us.redisRepo.DeleteSession(uuid)
+func (us *UserUseCase) Logout(uuid string) error {
+	err := us.redisRepo.DeleteSession(uuid)
 
 	if err != nil{
 		return err

@@ -3,10 +3,11 @@ package app
 import (
 	"fmt"
 	"tracker/internal/config"
-	"tracker/internal/handler"
-	jwt "tracker/pkg/middleware"
+	"tracker/internal/delivery/handler"
+	jwt "tracker/pkg/jwt"
 	"tracker/internal/repository"
 	"tracker/internal/usecase"
+	"tracker/internal/delivery/middleware"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -21,6 +22,7 @@ type App struct{
 	UserUseCase *usecase.UserUseCase
 	UserHandler *handler.UserHandler
 	Router *gin.Engine
+	Jwt *jwt.Jwt
 }
 
 func NewApp(c *config.Config) (*App, error) {
@@ -55,6 +57,7 @@ func NewApp(c *config.Config) (*App, error) {
 		UserUseCase: us,
 		UserHandler: uh,
 		Router: router,
+		Jwt: jwtService,
 	}
 
 	a.setupRouter()
@@ -71,5 +74,8 @@ func (a *App) setupRouter(){
 	api := a.Router.Group("/api/v1")
 	api.POST("/register", a.UserHandler.HandlerRegister) //user registration
 	api.POST("/login", a.UserHandler.HandlerLogin)	//user login
-	api.POST("/logout", a.UserHandler.HandlerLogout) //user logout
+
+	auth := api.Group("/")
+	auth.Use(middleware.AuthMiddleware(a.Jwt))
+	auth.POST("/logout", a.UserHandler.HandlerLogout) //user logout
 }

@@ -73,7 +73,7 @@ func (us *UserUseCase) Login(login, pass string) (*dto.UserSession, error) {
 	}
 
 	if ok := userDB.CheckHashedPassword(pass); !ok{
-		return nil, errors.New("invalid password")
+		return nil, errors.New("invalid login or password")
 	}
 
 	resp, err := us.jwtService.GenerateToken()

@@ -101,11 +101,21 @@ func (us *UserUseCase) Login(login, pass string) (*dto.UserSession, error) {
 }
 
 func (us *UserUseCase) Logout(uuid string) error {
-	err := us.redisRepo.DeleteSession(uuid)
+	err := us.redisRepo.DeleteUser(uuid)
 
 	if err != nil{
 		return err
 	}
 
 	return nil
+}
+
+func (us *UserUseCase) GetMe(uuid string) (*dto.UserSession, error) {
+	userSession, err := us.redisRepo.GetUser(uuid)
+
+	if err != nil{
+		return nil, err
+	}
+
+	return userSession, nil
 }

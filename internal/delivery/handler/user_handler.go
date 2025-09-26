@@ -83,3 +83,26 @@ func (uh *UserHandler) HandlerLogout(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message" : "logout successful"})
 }
+
+func (uh *UserHandler) HandlerGetMe(c *gin.Context){
+	uuid, exists := c.Get("uuid")
+
+	if !exists{
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "missing token"})
+		return
+	}
+
+	userSession, err := uh.userUC.GetMe(uuid.(string))
+
+	if err != nil{
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"id": userSession.ID,
+		"login": userSession.Login,
+		"token": userSession.Jwt,
+		"created_session_at": userSession.CreateSessionAt,
+	})
+}

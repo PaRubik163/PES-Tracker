@@ -78,4 +78,5 @@ func (a *App) setupRouter(){
 	auth := api.Group("/")
 	auth.Use(middleware.AuthMiddleware(a.Jwt))
 	auth.POST("/logout", a.UserHandler.HandlerLogout) //user logout
+	auth.GET("/me", a.UserHandler.HandlerGetMe) //user information
 }

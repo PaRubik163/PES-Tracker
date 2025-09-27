@@ -2,7 +2,6 @@ package app
 
 import (
 	"fmt"
-	"net/http"
 	"tracker/internal/config"
 	"tracker/internal/delivery/handler"
 	"tracker/internal/delivery/middleware"
@@ -91,7 +90,7 @@ func (a *App) Run() error {
 func (a *App) setupRouter(){
 	a.Router.GET("/register", a.Page.Register)
 	a.Router.GET("/login", a.Page.Login)
-	a.Router.GET("/me", func(c *gin.Context){c.HTML(http.StatusOK, "user_info.html", nil)})
+	a.Router.GET("/me", a.UserHandler.HandlerGetMe)
 
 	api := a.Router.Group("/api/v1")
 	api.POST("/register", a.UserHandler.HandlerRegister) //user registration

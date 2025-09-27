@@ -19,3 +19,7 @@ func (pgh *PageHandler) Register(c *gin.Context) {
 func (pgh *PageHandler) Login(c *gin.Context) {
 	c.HTML(http.StatusOK, "login.html", nil)
 }
+
+func (pgh *PageHandler) GetMe(c *gin.Context) {
+	c.HTML(http.StatusOK, "user_info", nil)
+}

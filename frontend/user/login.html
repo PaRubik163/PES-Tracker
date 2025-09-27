@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+    <h2>Login</h2>
+    <form id="loginForm">
+        <label>Email:</label><br>
+        <input type="text" id="login" name="login"><br><br>
+        <label>Password:</label><br>
+        <input type="password" id="password" name="password"><br><br>
+        <button type="submit">Login</button>
+    </form>
+
+    <p id="message"></p>
+
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const login = document.getElementById("login").value;
+            const password = document.getElementById("password").value;
+
+            const response = await fetch("/api/v1/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ login, password })
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                document.getElementById("message").innerText = "Login successful!";
+                localStorage.setItem("token", result.token); // сохраним JWT
+                setTimeout(() => {
+                    window.location.href = "/me";
+                }, 1000);
+            } else {
+                document.getElementById("message").innerText = result.error || "Login failed!";
+            }
+        });
+    </script>
+</body>
+</html>

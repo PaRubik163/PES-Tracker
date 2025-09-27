@@ -2,12 +2,13 @@ package app
 
 import (
 	"fmt"
+	"net/http"
 	"tracker/internal/config"
 	"tracker/internal/delivery/handler"
-	jwt "tracker/pkg/jwt"
+	"tracker/internal/delivery/middleware"
 	"tracker/internal/repository"
 	"tracker/internal/usecase"
-	"tracker/internal/delivery/middleware"
+	jwt "tracker/pkg/jwt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -18,6 +19,7 @@ import (
 type App struct{
 	Conf *config.Config
 	DB *gorm.DB
+	Page *handler.PageHandler
 	UserRepo *repository.UserRepository
 	UserUseCase *usecase.UserUseCase
 	UserHandler *handler.UserHandler
@@ -40,6 +42,8 @@ func NewApp(c *config.Config) (*App, error) {
 		return nil, err
 	}
 
+	pgh := handler.NewPageHandler() //here processing pages
+
 	ur := repository.NewUserRepository(db)
 	redisRepo := repository.NewRedisRepo(c)
 	jwtService := jwt.NewJwt([]byte(c.JWTKey))
@@ -48,11 +52,13 @@ func NewApp(c *config.Config) (*App, error) {
 	uh := handler.NewUserHandler(us)
 
 	router := gin.Default()
+	router.LoadHTMLGlob("frontend/user/*")
 	
 
 	a := &App{
 		Conf: c,
 		DB: db,
+		Page: pgh,
 		UserRepo: ur,
 		UserUseCase: us,
 		UserHandler: uh,
@@ -71,9 +77,13 @@ func (a *App) Run() error {
 }
 
 func (a *App) setupRouter(){
+	a.Router.GET("/login", a.Page.Login)
+	a.Router.GET("/register", a.Page.Register)
+	a.Router.GET("/me", func(c *gin.Context){c.HTML(http.StatusOK, "user_info.html", nil)})
+
 	api := a.Router.Group("/api/v1")
 	api.POST("/register", a.UserHandler.HandlerRegister) //user registration
-	api.POST("/login", a.UserHandler.HandlerLogin)	//user login
+	api.POST("/login", a.UserHandler.HandlerLogin)	//user login	
 
 	auth := api.Group("/")
 	auth.Use(middleware.AuthMiddleware(a.Jwt))

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+</head>
+<body>
+    <h2>Profile</h2>
+    <div id="profileInfo">
+        <p><strong>ID:</strong> <span id="userID"></span></p>
+        <p><strong>Login:</strong> <span id="userLogin"></span></p>
+        <p><strong>Token:</strong> <span id="userToken"></span></p>
+        <p><strong>Session Created At:</strong> <span id="sessionCreated"></span></p>
+        <button id="logoutBtn">Logout</button>
+    </div>
+
+    <p id="message"></p>
+
+    <script>
+        async function loadProfile() {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                document.getElementById("message").innerText = "You are not logged in!";
+                return;
+            }
+
+            const response = await fetch("/api/v1/me", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
+                }
+            });
+
+            if (!response.ok) {
+                document.getElementById("message").innerText = "Failed to load profile!";
+                return;
+            }
+
+            const data = await response.json();
+
+            document.getElementById("userID").innerText = data.id;
+            document.getElementById("userLogin").innerText = data.login;
+            document.getElementById("userToken").innerText = data.token;
+            document.getElementById("sessionCreated").innerText = data.created_session_at;
+        }
+
+        async function logout() {
+            const token = localStorage.getItem("token");
+            if (!token) return;
+
+            const response = await fetch("/api/v1/logout", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
+                }
+            });
+
+            if (response.ok) {
+                localStorage.removeItem("token");
+                window.location.href = "/login";
+            } else {
+                const data = await response.json();
+                document.getElementById("message").innerText = data.error || "Logout failed!";
+            }
+        }
+
+        document.getElementById("logoutBtn").addEventListener("click", logout);
+
+        window.onload = loadProfile;
+    </script>
+</body>
+</html>

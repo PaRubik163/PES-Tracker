@@ -90,7 +90,7 @@ func (a *App) Run() error {
 func (a *App) setupRouter(){
 	a.Router.GET("/register", a.Page.Register)
 	a.Router.GET("/login", a.Page.Login)
-	a.Router.GET("/me", a.UserHandler.HandlerGetMe)
+	a.Router.GET("/me", a.Page.GetMe)
 
 	api := a.Router.Group("/api/v1")
 	api.POST("/register", a.UserHandler.HandlerRegister) //user registration

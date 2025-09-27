@@ -1,6 +1,9 @@
 package usecase
 
-import "tracker/internal/repository"
+import (
+	"tracker/internal/entity"
+	"tracker/internal/repository"
+)
 
 type SubscriptionUseCase struct {
 	subscriptionRepo *repository.SubscriptionRepo
@@ -10,4 +13,20 @@ func NewSubscriptionUseCase(sr *repository.SubscriptionRepo) *SubscriptionUseCas
 	return &SubscriptionUseCase{
 		subscriptionRepo: sr,
 	}
+}
+
+func (su *SubscriptionUseCase) CreateSubscription(sub *entity.Subscription) error {
+	err := sub.CheckNewSubscription()
+
+	if err != nil{
+		return err
+	}
+
+	err = su.subscriptionRepo.Create(sub)
+
+	if err != nil{
+		return err
+	}
+
+	return nil
 }

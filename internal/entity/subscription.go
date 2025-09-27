@@ -6,14 +6,15 @@ import (
 )
 
 type Subscription struct {
-	ID              uint      `gorm:"primaryKey;column:id"`
-	Name            string    `gorm:"notNull;column:subscription_name"`
-	Amount          float32   `gorm:"column:amount"`
-	Url             string    `gorm:"column:url"`
-	StartDate       time.Time `gorm:"notNull;column:start_date"`     
-	BillingPeriod   string    `gorm:"notNull;column:billing_period"`   
-	NextBillingDate time.Time `gorm:"notNull;column:next_billing_date"`
+	ID              uint      `gorm:"primaryKey;column:id" json:"id"`
+	Name            string    `gorm:"notNull;column:subscription_name" json:"name"`
+	Amount          float32   `gorm:"column:amount" json:"amount"`
+	Url             string    `gorm:"column:url" json:"url"`
+	StartDate       time.Time `gorm:"notNull;column:start_date" json:"start_date"`
+	BillingPeriod   string    `gorm:"notNull;column:billing_period" json:"billing_period"`
+	NextBillingDate time.Time `gorm:"notNull;column:next_billing_date" json:"next_billing_date"`
 }
+
 
 func (s *Subscription) CheckNewSubscription() error {
 	if s.Name == ""{

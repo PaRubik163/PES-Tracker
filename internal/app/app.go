@@ -23,6 +23,9 @@ type App struct{
 	UserRepo *repository.UserRepository
 	UserUseCase *usecase.UserUseCase
 	UserHandler *handler.UserHandler
+	SubscriptionRepo *repository.SubscriptionRepo
+	SubscriptionUseCase *usecase.SubscriptionUseCase
+	SubscriptionHandler *handler.SubscriptionHandler
 	Router *gin.Engine
 	Jwt *jwt.Jwt
 }
@@ -41,16 +44,22 @@ func NewApp(c *config.Config) (*App, error) {
 	if err != nil{
 		return nil, err
 	}
+	redisRepo := repository.NewRedisRepo(c) //redis
+	jwtService := jwt.NewJwt([]byte(c.JWTKey)) //jwt
 
 	pgh := handler.NewPageHandler() //here processing pages
 
+	//user section
 	ur := repository.NewUserRepository(db)
-	redisRepo := repository.NewRedisRepo(c)
-	jwtService := jwt.NewJwt([]byte(c.JWTKey))
-	
 	us := usecase.NewUserUseCase(ur,redisRepo, jwtService)
 	uh := handler.NewUserHandler(us)
 
+	//subscription section
+	sr := repository.NewSubscriptionRepo(db)
+	sUseCase := usecase.NewSubscriptionUseCase(sr)
+	sh := handler.NewSubscriptionHandler(sUseCase)
+
+	//gin section
 	router := gin.Default()
 	router.LoadHTMLGlob("frontend/user/*")
 	
@@ -62,6 +71,9 @@ func NewApp(c *config.Config) (*App, error) {
 		UserRepo: ur,
 		UserUseCase: us,
 		UserHandler: uh,
+		SubscriptionRepo: sr,
+		SubscriptionUseCase: sUseCase,
+		SubscriptionHandler: sh,
 		Router: router,
 		Jwt: jwtService,
 	}
@@ -77,8 +89,8 @@ func (a *App) Run() error {
 }
 
 func (a *App) setupRouter(){
-	a.Router.GET("/login", a.Page.Login)
 	a.Router.GET("/register", a.Page.Register)
+	a.Router.GET("/login", a.Page.Login)
 	a.Router.GET("/me", func(c *gin.Context){c.HTML(http.StatusOK, "user_info.html", nil)})
 
 	api := a.Router.Group("/api/v1")
@@ -89,4 +101,6 @@ func (a *App) setupRouter(){
 	auth.Use(middleware.AuthMiddleware(a.Jwt))
 	auth.POST("/logout", a.UserHandler.HandlerLogout) //user logout
 	auth.GET("/me", a.UserHandler.HandlerGetMe) //user information
+
+	auth.POST("/new_subscriptions", a.SubscriptionHandler.HandlerAdd) //add subscription
 }

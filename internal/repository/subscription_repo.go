@@ -15,6 +15,19 @@ func NewSubscriptionRepo(db *gorm.DB) (*SubscriptionRepo) {
 	return &SubscriptionRepo{db: db}
 }
 
-func (sr *SubscriptionRepo) Create(subscription *entity.Subscription) error {
+func (sr *SubscriptionRepo) Create(subscription *entity.Subscription) (error) {
 	return sr.db.Create(&subscription).Error
+}
+
+//later I will do this using an array
+func (sr *SubscriptionRepo) GetAll() (*entity.Subscription, error) {
+	sub := &entity.Subscription{}
+
+	err := sr.db.Find(sub).Error
+
+	if err != nil{
+		return nil, err
+	}
+
+	return sub, nil
 }

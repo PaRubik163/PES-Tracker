@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscriptions</title>
+</head>
+<body>
+    <h2>Subscriptions</h2>
+    <div id="SubscriptionsInfo">
+        <p><strong>Name:</strong> <span id="subName"></span></p>
+        <p><strong>Amount:</strong> <span id="subAmount"></span></p>
+        <p><strong>Url:</strong> <span id="subUrl"></span></p>
+        <p><strong>Started at:</strong> <span id="subStartedat"></span></p>
+        <p><strong>Period:</strong> <span id="subPeriod"></span></p>
+        <p><strong>Next Billing Date:</strong> <span id="subNext"></span></p>
+        <button id="getme">Profile</button>
+    </div>
+
+    <p id="message"></p>
+
+    <script>
+        async function loadSubscriptions() {
+             const token = localStorage.getItem("token");
+            if (!token) {
+                document.getElementById("message").innerText = "You are not logged in!";
+                return;
+            }
+
+            const response = await fetch("/api/v1/subscriptions", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
+                }
+            });
+
+            if (!response.ok) {
+                document.getElementById("message").innerText = "Failed to load subscriptions!";
+                return;
+            }
+
+            const data = await response.json();
+
+            document.getElementById("subName").innerText = data.name;
+            document.getElementById("subAmount").innerText = data.amount;
+            document.getElementById("subUrl").innerText = data.url;
+            document.getElementById("subStartedat").innerText = data.started_at;
+            document.getElementById("subPeriod").innerText = data.period;
+            document.getElementById("subNext").innerText = data.next_pay;
+        }
+
+        async function GoToProfile(params) {
+            const token = localStorage.getItem("token");
+            if (!token) return;
+           
+            setTimeout(() => {
+                window.location.href = "/me";
+            }, 1000);   
+        }
+
+        document.getElementById("getme").addEventListener("click", GoToProfile);
+
+        window.onload = loadSubscriptions;
+    </script>
+</body>
+</html>

@@ -30,3 +30,13 @@ func (su *SubscriptionUseCase) CreateSubscription(sub *entity.Subscription) erro
 
 	return nil
 }
+
+func (su *SubscriptionUseCase) GetAllSubscriptions() (*entity.Subscription, error) {
+	sub, err := su.subscriptionRepo.GetAll()
+
+	if err != nil{
+		return nil, err
+	}
+
+	return sub, nil
+}

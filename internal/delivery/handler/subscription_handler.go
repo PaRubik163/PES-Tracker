@@ -33,15 +33,23 @@ func (sh *SubscriptionHandler) HandlerAdd(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{
-		"message": "subscription successful created",
-		"subscription": gin.H{
-			"id": sub.ID,
-			"name": sub.Name,
-			"amount": sub.Amount,
-			"started_at": sub.StartDate,
-			"period": sub.BillingPeriod,
-			"next_pay": sub.NextBillingDate,
-		},
+	c.JSON(http.StatusCreated, gin.H{"message": "subscription successful created"})
+}
+
+func (sh *SubscriptionHandler) HandlerGetAll(c *gin.Context) {
+	sub, err := sh.subscriptionUseCase.GetAllSubscriptions()
+
+	if err != nil{
+		c.JSON(http.StatusInternalServerError, gin.H{"error" : err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"id": sub.ID,
+		"name": sub.Name,
+		"amount": sub.Amount,
+		"started_at": sub.StartDate,
+		"period": sub.BillingPeriod,
+		"next_pay": sub.NextBillingDate,
 	})
 }

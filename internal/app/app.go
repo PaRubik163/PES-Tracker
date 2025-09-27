@@ -60,7 +60,7 @@ func NewApp(c *config.Config) (*App, error) {
 
 	//gin section
 	router := gin.Default()
-	router.LoadHTMLGlob("frontend/user/*")
+	router.LoadHTMLGlob("frontend/templates/*")
 	
 
 	a := &App{
@@ -91,6 +91,7 @@ func (a *App) setupRouter(){
 	a.Router.GET("/register", a.Page.Register)
 	a.Router.GET("/login", a.Page.Login)
 	a.Router.GET("/me", a.Page.GetMe)
+	a.Router.GET("/subscriptions", a.Page.GetAllSubscriptions)
 
 	api := a.Router.Group("/api/v1")
 	api.POST("/register", a.UserHandler.HandlerRegister) //user registration
@@ -102,4 +103,5 @@ func (a *App) setupRouter(){
 	auth.GET("/me", a.UserHandler.HandlerGetMe) //user information
 
 	auth.POST("/new_subscriptions", a.SubscriptionHandler.HandlerAdd) //add subscription
+	auth.GET("/subscriptions", a.SubscriptionHandler.HandlerGetAll)
 }

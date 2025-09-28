@@ -36,6 +36,7 @@ func (r *Router) setupPageRoutes() {
     r.Engine.GET("/login", r.pageHandler.Login)
     r.Engine.GET("/register", r.pageHandler.Register)
 	r.Engine.GET("/me", r.pageHandler.GetMe)
+	r.Engine.GET("/new_subscription", r.pageHandler.NewSubscription)
     r.Engine.GET("/subscriptions", r.pageHandler.GetAllSubscriptions)
 }
 
@@ -51,7 +52,7 @@ func (r *Router) setupAPIRoutes() {
             auth.POST("/logout", r.userHandler.HandlerLogout)
             auth.GET("/me", r.userHandler.HandlerGetMe)
 
-            auth.POST("/subscriptions", r.subscriptionHandler.HandlerAdd)
+            auth.POST("/new_subscription", r.subscriptionHandler.HandlerAdd)
             auth.GET("/subscriptions", r.subscriptionHandler.HandlerGetAll)
         }
     }

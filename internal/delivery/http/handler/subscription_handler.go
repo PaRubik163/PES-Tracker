@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 	"tracker/internal/entity"
 	"tracker/internal/usecase"
@@ -23,6 +24,7 @@ func (sh *SubscriptionHandler) HandlerAdd(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(sub); err != nil{
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid requset"})
+		fmt.Println(err)
 		return
 	}
 
@@ -47,6 +49,7 @@ func (sh *SubscriptionHandler) HandlerGetAll(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"id": sub.ID,
 		"name": sub.Name,
+		"url": sub.Url,
 		"amount": sub.Amount,
 		"started_at": sub.StartDate,
 		"period": sub.BillingPeriod,

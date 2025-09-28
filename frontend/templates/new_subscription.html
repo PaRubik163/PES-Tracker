@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Subscription</title>
+</head>
+<body>
+    <h2>New Subscription</h2>
+    <form id="newSub">
+        <label>Name:</label><br>
+        <input type="text" id="name" name="name"><br><br>
+        <label>Amount:</label><br>
+        <input type="amount" id="amount" name="amount" step="0.01"><br><br>
+        <label>Url:</label><br>
+        <input type="text" id="url" name="url"><br><br>
+        <label>Started at:</label><br>
+        <input type="date" id="start_date" name="start_date"><br><br>
+        <label>Period:</label><br>
+        <input type="text" id="billing_period" name="billing_period"><br><br>
+        <label>Next Billing Date:</label><br>
+        <input type="date" id="next_billing_date" name="next_billing_date"><br><br>
+        <button type="button" id="add">Add</button>
+        <button type="button" id="all_subscriptions">All Subscriptions</button>
+    </form>
+
+    <p id="message"></p>
+
+    <script>
+        async function newSubscription() {
+            const name = document.getElementById("name").value;
+
+            const amount = parseFloat(document.getElementById("amount").value);
+            if (isNaN(amount)) {
+                document.getElementById("message").innerText = "Amount must be a number!";
+                return;
+            }
+
+            const url = document.getElementById("url").value;
+            const start_date = new Date(document.getElementById("start_date").value).toISOString();
+            const billing_period = document.getElementById("billing_period").value;
+            const next_billing_date = new Date(document.getElementById("next_billing_date").value).toISOString();
+
+            const token = localStorage.getItem("token")
+            if (!token) {
+                document.getElementById("message").innerText = "You are not logged in!";
+                return;
+            }
+
+            const response = await fetch("/api/v1/new_subscription", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
+                },
+                body: JSON.stringify({ name, amount, url, start_date, billing_period, next_billing_date })
+            })
+
+            if (response.ok){
+                document.getElementById("message").innerText = "Subscription added!";
+            } else {
+                const err = await response.text();
+                document.getElementById("message").innerText = "Error: " + err;
+            }
+        }
+
+        async function allSubscriptions() {
+            setTimeout(() => {
+                window.location.href = "/subscriptions";
+            }, 1000);
+        }
+
+        document.getElementById("add").addEventListener("click", newSubscription)
+        document.getElementById("all_subscriptions").addEventListener("click", allSubscriptions)
+       
+    </script>
+</body>
+</html>

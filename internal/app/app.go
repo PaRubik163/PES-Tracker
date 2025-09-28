@@ -3,13 +3,12 @@ package app
 import (
 	"fmt"
 	"tracker/internal/config"
-	"tracker/internal/delivery/handler"
-	"tracker/internal/delivery/middleware"
+	"tracker/internal/delivery/http/handler"
+	"tracker/internal/delivery/http/route"
 	"tracker/internal/repository"
 	"tracker/internal/usecase"
 	jwt "tracker/pkg/jwt"
 
-	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -18,6 +17,8 @@ import (
 type App struct{
 	Conf *config.Config
 	DB *gorm.DB
+	Redis *repository.RedisRepo
+	Jwt *jwt.Jwt
 	Page *handler.PageHandler
 	UserRepo *repository.UserRepository
 	UserUseCase *usecase.UserUseCase
@@ -25,8 +26,7 @@ type App struct{
 	SubscriptionRepo *repository.SubscriptionRepo
 	SubscriptionUseCase *usecase.SubscriptionUseCase
 	SubscriptionHandler *handler.SubscriptionHandler
-	Router *gin.Engine
-	Jwt *jwt.Jwt
+	Router *route.Router
 }
 
 func NewApp(c *config.Config) (*App, error) {
@@ -58,14 +58,14 @@ func NewApp(c *config.Config) (*App, error) {
 	sUseCase := usecase.NewSubscriptionUseCase(sr)
 	sh := handler.NewSubscriptionHandler(sUseCase)
 
-	//gin section
-	router := gin.Default()
-	router.LoadHTMLGlob("frontend/templates/*")
+	router := route.NewRouter(pgh, uh, sh, jwtService) //gin section
+	router.SetupRouter()
 	
-
 	a := &App{
 		Conf: c,
 		DB: db,
+		Redis: redisRepo,
+		Jwt: jwtService,
 		Page: pgh,
 		UserRepo: ur,
 		UserUseCase: us,
@@ -74,34 +74,11 @@ func NewApp(c *config.Config) (*App, error) {
 		SubscriptionUseCase: sUseCase,
 		SubscriptionHandler: sh,
 		Router: router,
-		Jwt: jwtService,
 	}
-
-	a.setupRouter()
-
 	return a, nil
 }
 
 func (a *App) Run() error {
 	logrus.Info("Start new app")
-	return a.Router.Run(a.Conf.GinAddr)
-}
-
-func (a *App) setupRouter(){
-	a.Router.GET("/register", a.Page.Register)
-	a.Router.GET("/login", a.Page.Login)
-	a.Router.GET("/me", a.Page.GetMe)
-	a.Router.GET("/subscriptions", a.Page.GetAllSubscriptions)
-
-	api := a.Router.Group("/api/v1")
-	api.POST("/register", a.UserHandler.HandlerRegister) //user registration
-	api.POST("/login", a.UserHandler.HandlerLogin)	//user login	
-
-	auth := api.Group("/")
-	auth.Use(middleware.AuthMiddleware(a.Jwt))
-	auth.POST("/logout", a.UserHandler.HandlerLogout) //user logout
-	auth.GET("/me", a.UserHandler.HandlerGetMe) //user information
-
-	auth.POST("/new_subscriptions", a.SubscriptionHandler.HandlerAdd) //add subscription
-	auth.GET("/subscriptions", a.SubscriptionHandler.HandlerGetAll)
+	return a.Router.Engine.Run(a.Conf.GinAddr)
 }

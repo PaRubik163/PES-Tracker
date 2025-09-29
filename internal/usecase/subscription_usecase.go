@@ -40,3 +40,11 @@ func (su *SubscriptionUseCase) GetAllSubscriptions(userID int) ([]*entity.Subscr
 
 	return subs, nil
 }
+
+func (su *SubscriptionUseCase) DeleteSubscription(subID, userID int) error {
+	if err := su.subscriptionRepo.DeleteByID(subID, userID); err != nil{
+		return err
+	}
+
+	return nil
+}

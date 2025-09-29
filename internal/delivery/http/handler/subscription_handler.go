@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
 	"tracker/internal/entity"
 	"tracker/internal/usecase"
 
@@ -59,4 +60,33 @@ func (sh *SubscriptionHandler) HandlerGetAll(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, subs)
+}
+
+func (sh *SubscriptionHandler) HandlerDeleteSubscription(c *gin.Context) {
+	subIdStr := c.Param("id")
+
+	if subIdStr == ""{
+		c.JSON(http.StatusBadRequest, gin.H{"error" : "invalid request"})
+		return
+	}
+
+	userID, ok := c.Get("user_id")
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		return
+	}
+
+	id, err := strconv.Atoi(subIdStr)
+
+	if err != nil{
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := sh.subscriptionUseCase.DeleteSubscription(id, userID.(int)); err != nil{
+		c.JSON(http.StatusInternalServerError, gin.H{"error" : err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "subscription successful deleted"})
 }

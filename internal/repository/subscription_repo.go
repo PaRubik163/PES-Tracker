@@ -30,3 +30,7 @@ func (sr *SubscriptionRepo) GetAll(userID int) ([]*entity.Subscription, error) {
 
 	return subs, nil
 }
+
+func (sr *SubscriptionRepo) DeleteByID(subID, userID int) error {
+	return sr.db.Where("id = ? AND user_id = ?", subID, userID).Delete(&entity.Subscription{}).Error
+}

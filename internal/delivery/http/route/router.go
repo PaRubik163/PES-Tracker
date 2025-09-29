@@ -54,6 +54,7 @@ func (r *Router) setupAPIRoutes() {
 
             auth.POST("/new_subscription", r.subscriptionHandler.HandlerAdd)
             auth.GET("/subscriptions", r.subscriptionHandler.HandlerGetAll)
+			auth.DELETE("/subscription/:id", r.subscriptionHandler.HandlerDeleteSubscription)
         }
     }
 }

@@ -19,15 +19,14 @@ func (sr *SubscriptionRepo) Create(subscription *entity.Subscription) (error) {
 	return sr.db.Create(&subscription).Error
 }
 
-//later I will do this using an array
-func (sr *SubscriptionRepo) GetAll() (*entity.Subscription, error) {
-	sub := &entity.Subscription{}
+func (sr *SubscriptionRepo) GetAll() ([]*entity.Subscription, error) {
+	var subs []*entity.Subscription
 
-	err := sr.db.Find(sub).Error
+	err := sr.db.Find(&subs).Error
 
 	if err != nil{
 		return nil, err
 	}
 
-	return sub, nil
+	return subs, nil
 }

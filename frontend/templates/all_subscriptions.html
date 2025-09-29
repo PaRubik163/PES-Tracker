@@ -7,21 +7,14 @@
 </head>
 <body>
     <h2>Subscriptions</h2>
-    <div id="SubscriptionsInfo">
-        <p><strong>Name:</strong> <span id="subName"></span></p>
-        <p><strong>Amount:</strong> <span id="subAmount"></span></p>
-        <p><strong>Url:</strong> <span id="subUrl"></span></p>
-        <p><strong>Started at:</strong> <span id="subStartedat"></span></p>
-        <p><strong>Period:</strong> <span id="subPeriod"></span></p>
-        <p><strong>Next Billing Date:</strong> <span id="subNext"></span></p>
-        <button id="getme">Profile</button>
-    </div>
+    <div id="SubscriptionsInfo"></div>
 
+    <button id="getme">Profile</button>
     <p id="message"></p>
 
     <script>
         async function loadSubscriptions() {
-             const token = localStorage.getItem("token");
+            const token = localStorage.getItem("token");
             if (!token) {
                 document.getElementById("message").innerText = "You are not logged in!";
                 return;
@@ -41,22 +34,28 @@
             }
 
             const data = await response.json();
+            const container = document.getElementById("SubscriptionsInfo");
+            container.innerHTML = "";
 
-            document.getElementById("subName").innerText = data.name;
-            document.getElementById("subAmount").innerText = data.amount;
-            document.getElementById("subUrl").innerText = data.url;
-            document.getElementById("subStartedat").innerText = data.started_at;
-            document.getElementById("subPeriod").innerText = data.period;
-            document.getElementById("subNext").innerText = data.next_pay;
+            data.forEach(sub => {
+                const subDiv = document.createElement("div");
+                subDiv.style.border = "1px solid #ccc";
+                subDiv.style.margin = "10px";
+                subDiv.style.padding = "10px";
+                subDiv.innerHTML = `
+                    <p><strong>Name:</strong> ${sub.name}</p>
+                    <p><strong>Amount:</strong> ${sub.amount}</p>
+                    <p><strong>Url:</strong> <a href="${sub.url}" target="_blank">${sub.url}</a></p>
+                    <p><strong>Started at:</strong> ${sub.start_date}</p>
+                    <p><strong>Period:</strong> ${sub.billing_period}</p>
+                    <p><strong>Next Billing Date:</strong> ${sub.next_billing_date}</p>
+                `;
+                container.appendChild(subDiv);
+            });
         }
 
-        async function GoToProfile(params) {
-            const token = localStorage.getItem("token");
-            if (!token) return;
-           
-            setTimeout(() => {
-                window.location.href = "/me";
-            }, 1000);   
+        function GoToProfile() {
+            window.location.href = "/me";
         }
 
         document.getElementById("getme").addEventListener("click", GoToProfile);

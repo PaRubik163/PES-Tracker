@@ -6,7 +6,9 @@ import (
 )
 
 type Subscription struct {
-	ID              uint      `gorm:"primaryKey;column:id" json:"id"`
+	ID              int       `gorm:"primaryKey;column:id" json:"id"`
+	UserID			int		  `gorm:"notNull;column:user_id" json:"user_id`	
+	User 			User      `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
 	Name            string    `gorm:"notNull;column:subscription_name" json:"name"`
 	Amount          float32   `gorm:"column:amount" json:"amount"`
 	Url             string    `gorm:"column:url" json:"url"`

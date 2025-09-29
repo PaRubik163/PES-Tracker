@@ -76,7 +76,7 @@ func (us *UserUseCase) Login(login, pass string) (*dto.UserSession, error) {
 		return nil, errors.New("invalid login or password")
 	}
 
-	resp, err := us.jwtService.GenerateToken()
+	resp, err := us.jwtService.GenerateToken(userDB.ID)
 	if err != nil{
 		return nil, err
 	}

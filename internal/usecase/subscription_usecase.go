@@ -31,8 +31,8 @@ func (su *SubscriptionUseCase) CreateSubscription(sub *entity.Subscription) erro
 	return nil
 }
 
-func (su *SubscriptionUseCase) GetAllSubscriptions() ([]*entity.Subscription, error) {
-	subs, err := su.subscriptionRepo.GetAll()
+func (su *SubscriptionUseCase) GetAllSubscriptions(userID int) ([]*entity.Subscription, error) {
+	subs, err := su.subscriptionRepo.GetAll(userID)
 
 	if err != nil{
 		return nil, err

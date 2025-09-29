@@ -21,15 +21,15 @@ func AuthMiddleware(jwt *jwt.Jwt) gin.HandlerFunc {
 			token = strings.TrimPrefix(token, "Bearer ")
 		}
 
-		uuid, err := jwt.ValidateToken(token)
+		session, err := jwt.ValidateToken(token)
 
 		if err != nil{
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error":err.Error()})
 			return
 		}
 
-		c.Set("uuid", uuid)
-
+		c.Set("uuid", session.ID)
+		c.Set("user_id", session.UserID)
 		c.Next()
 	}
 }

@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 	"tracker/internal/entity"
 	"tracker/internal/usecase"
@@ -24,9 +23,16 @@ func (sh *SubscriptionHandler) HandlerAdd(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(sub); err != nil{
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid requset"})
-		fmt.Println(err)
 		return
 	}
+
+	userID, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "user not authorized"})
+		return
+	}
+
+	sub.UserID = userID.(int)
 
 	err := sh.subscriptionUseCase.CreateSubscription(sub)
 
@@ -39,7 +45,13 @@ func (sh *SubscriptionHandler) HandlerAdd(c *gin.Context) {
 }
 
 func (sh *SubscriptionHandler) HandlerGetAll(c *gin.Context) {
-	subs, err := sh.subscriptionUseCase.GetAllSubscriptions()
+	userID, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "user not authorized"})
+		return
+	}
+
+	subs, err := sh.subscriptionUseCase.GetAllSubscriptions(userID.(int))
 
 	if err != nil{
 		c.JSON(http.StatusInternalServerError, gin.H{"error" : err.Error()})

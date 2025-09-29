@@ -19,3 +19,15 @@ func (pgh *PageHandler) Register(c *gin.Context) {
 func (pgh *PageHandler) Login(c *gin.Context) {
 	c.HTML(http.StatusOK, "login.html", nil)
 }
+
+func (pgh *PageHandler) GetMe(c *gin.Context) {
+	c.HTML(http.StatusOK, "user_info.html", nil)
+}
+
+func (pgh *PageHandler) NewSubscription(c *gin.Context) {
+	c.HTML(http.StatusOK, "new_subscription.html", nil)
+}
+
+func (pgh *PageHandler) GetAllSubscriptions(c *gin.Context) {
+	c.HTML(http.StatusOK, "all_subscriptions.html", nil)
+}

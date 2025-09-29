@@ -2,15 +2,13 @@ package app
 
 import (
 	"fmt"
-	"net/http"
 	"tracker/internal/config"
-	"tracker/internal/delivery/handler"
-	"tracker/internal/delivery/middleware"
+	"tracker/internal/delivery/http/handler"
+	"tracker/internal/delivery/http/route"
 	"tracker/internal/repository"
 	"tracker/internal/usecase"
 	jwt "tracker/pkg/jwt"
 
-	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -19,12 +17,16 @@ import (
 type App struct{
 	Conf *config.Config
 	DB *gorm.DB
+	Redis *repository.RedisRepo
+	Jwt *jwt.Jwt
 	Page *handler.PageHandler
 	UserRepo *repository.UserRepository
 	UserUseCase *usecase.UserUseCase
 	UserHandler *handler.UserHandler
-	Router *gin.Engine
-	Jwt *jwt.Jwt
+	SubscriptionRepo *repository.SubscriptionRepo
+	SubscriptionUseCase *usecase.SubscriptionUseCase
+	SubscriptionHandler *handler.SubscriptionHandler
+	Router *route.Router
 }
 
 func NewApp(c *config.Config) (*App, error) {
@@ -41,52 +43,42 @@ func NewApp(c *config.Config) (*App, error) {
 	if err != nil{
 		return nil, err
 	}
+	redisRepo := repository.NewRedisRepo(c) //redis
+	jwtService := jwt.NewJwt([]byte(c.JWTKey)) //jwt
 
 	pgh := handler.NewPageHandler() //here processing pages
 
+	//user section
 	ur := repository.NewUserRepository(db)
-	redisRepo := repository.NewRedisRepo(c)
-	jwtService := jwt.NewJwt([]byte(c.JWTKey))
-	
 	us := usecase.NewUserUseCase(ur,redisRepo, jwtService)
 	uh := handler.NewUserHandler(us)
 
-	router := gin.Default()
-	router.LoadHTMLGlob("frontend/user/*")
-	
+	//subscription section
+	sr := repository.NewSubscriptionRepo(db)
+	sUseCase := usecase.NewSubscriptionUseCase(sr)
+	sh := handler.NewSubscriptionHandler(sUseCase)
 
+	router := route.NewRouter(pgh, uh, sh, jwtService) //gin section
+	router.SetupRouter()
+	
 	a := &App{
 		Conf: c,
 		DB: db,
+		Redis: redisRepo,
+		Jwt: jwtService,
 		Page: pgh,
 		UserRepo: ur,
 		UserUseCase: us,
 		UserHandler: uh,
+		SubscriptionRepo: sr,
+		SubscriptionUseCase: sUseCase,
+		SubscriptionHandler: sh,
 		Router: router,
-		Jwt: jwtService,
 	}
-
-	a.setupRouter()
-
 	return a, nil
 }
 
 func (a *App) Run() error {
 	logrus.Info("Start new app")
-	return a.Router.Run(a.Conf.GinAddr)
-}
-
-func (a *App) setupRouter(){
-	a.Router.GET("/login", a.Page.Login)
-	a.Router.GET("/register", a.Page.Register)
-	a.Router.GET("/me", func(c *gin.Context){c.HTML(http.StatusOK, "user_info.html", nil)})
-
-	api := a.Router.Group("/api/v1")
-	api.POST("/register", a.UserHandler.HandlerRegister) //user registration
-	api.POST("/login", a.UserHandler.HandlerLogin)	//user login	
-
-	auth := api.Group("/")
-	auth.Use(middleware.AuthMiddleware(a.Jwt))
-	auth.POST("/logout", a.UserHandler.HandlerLogout) //user logout
-	auth.GET("/me", a.UserHandler.HandlerGetMe) //user information
+	return a.Router.Engine.Run(a.Conf.GinAddr)
 }

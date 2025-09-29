@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscriptions</title>
+</head>
+<body>
+    <h2>Subscriptions</h2>
+    <div id="SubscriptionsInfo"></div>
+
+    <button id="getme">Profile</button>
+    <p id="message"></p>
+
+    <script>
+        async function loadSubscriptions() {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                document.getElementById("message").innerText = "You are not logged in!";
+                return;
+            }
+
+            const response = await fetch("/api/v1/subscriptions", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
+                }
+            });
+
+            if (!response.ok) {
+                document.getElementById("message").innerText = "Failed to load subscriptions!";
+                return;
+            }
+
+            const data = await response.json();
+            const container = document.getElementById("SubscriptionsInfo");
+            container.innerHTML = "";
+
+            data.forEach(sub => {
+                const subDiv = document.createElement("div");
+                subDiv.style.border = "1px solid #ccc";
+                subDiv.style.margin = "10px";
+                subDiv.style.padding = "10px";
+                subDiv.innerHTML = `
+                    <p><strong>Name:</strong> ${sub.name}</p>
+                    <p><strong>Amount:</strong> ${sub.amount}</p>
+                    <p><strong>Url:</strong> <a href="${sub.url}" target="_blank">${sub.url}</a></p>
+                    <p><strong>Started at:</strong> ${sub.start_date}</p>
+                    <p><strong>Period:</strong> ${sub.billing_period}</p>
+                    <p><strong>Next Billing Date:</strong> ${sub.next_billing_date}</p>
+                `;
+                container.appendChild(subDiv);
+            });
+        }
+
+        function GoToProfile() {
+            window.location.href = "/me";
+        }
+
+        document.getElementById("getme").addEventListener("click", GoToProfile);
+
+        window.onload = loadSubscriptions;
+    </script>
+</body>
+</html>

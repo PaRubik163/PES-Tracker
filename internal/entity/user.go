@@ -9,9 +9,9 @@ import (
 )
 
 type User struct{
-	ID uint					`gorm:"column:id"`
-	Login string			`gorm:"unique;column:login"`
-	Password string			`gorm:"column:password"`
+	ID uint					`gorm:"primaryKey;column:id"`
+	Login string			`gorm:"notNull;unique;column:login"`
+	Password string			`gorm:"notNull;column:password"`
 	RegisteredAt time.Time  `gorm:"notNull;column:registered_at"`
 	LastLogin time.Time 	`gorm:"notNull;column:last_login"`
 }

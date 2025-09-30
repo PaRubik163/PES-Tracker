@@ -61,7 +61,7 @@ func (uh *UserHandler) HandlerLogin(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "login successful",
+		"message": "Welcome to the PES Tracker",
 		"token": user.Jwt,
 		"user": gin.H{
 			"id": user.ID,

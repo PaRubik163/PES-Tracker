@@ -32,7 +32,7 @@
             const result = await response.json();
 
             if (response.ok) {
-                document.getElementById("message").innerText = "user registered";
+                document.getElementById("message").innerText = result.message;
                 setTimeout(() => {
                     window.location.href = "/login";
                 }, 1000);

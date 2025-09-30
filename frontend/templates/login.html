@@ -37,7 +37,7 @@
             const result = await response.json();
 
             if (response.ok) {
-                document.getElementById("message").innerText = "Login successful!";
+                document.getElementById("message").innerText = result.message;
                 localStorage.setItem("token", result.token); // сохраним JWT
                 setTimeout(() => {
                     window.location.href = "/me";

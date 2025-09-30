@@ -18,6 +18,7 @@ type Router struct{
 func NewRouter(ph *handler.PageHandler, uh *handler.UserHandler, sh *handler.SubscriptionHandler, jwt *jwt.Jwt) *Router {
 	router := gin.Default()
 	router.LoadHTMLGlob("./frontend/templates/*")
+	router.Static("/static", "./frontend/static")
 	return &Router{
 		Engine: router,
 		pageHandler: ph,

@@ -1,0 +1,83 @@
+body {
+    background-color: #000; /* черный фон */
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    color: #7CFC00;
+}
+
+h2 {
+    text-align: center;
+    color: #7CFC00; /* неоново-зеленый заголовок */
+}
+
+form {
+    background: #111;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 50px rgba(221, 0, 184, 0.61);
+    width: 300px;
+}
+
+label {
+    font-size: 14px;
+    margin-bottom: 5px;
+    display: block;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 93%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #7CFC00;
+    border-radius: 50px;
+    background: transparent;
+    color: #f1f1f1;
+    font-size: 14px;
+    outline: none;
+    transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+    box-shadow: 0 0 8px #7CFC00;
+    border-color: #7CFC00;
+}
+
+button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background: #fff;
+    color: #000;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    transition: background 0.3s, color 0.3s;
+}
+
+button[type="submit"]:hover {
+    background: #7CFC00;
+    color: #000;
+}
+
+#message {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+/* главный заголовок */
+.main-title {
+    text-align: center;
+    font-size: 48px;
+    font-weight: bold;
+    color: #7CFC00; /* неоново-зеленый */
+    margin-bottom: 20px;
+    text-shadow: 0 0 15px rgba(124, 252, 0, 0.6);
+}

@@ -18,7 +18,7 @@ form {
     background: #111;
     padding: 30px;
     border-radius: 10px;
-    box-shadow: 0 0 30px rgba(221, 0, 184, 0.61);
+    box-shadow: 0 0 50px rgb(239, 86, 214);
     width: 300px;
 }
 
@@ -60,6 +60,33 @@ button[type="submit"] {
     font-size: 14px;
     transition: background 0.3s, color 0.3s;
 }
+
+/* Отступ сверху у кнопки Register */
+#registerForm button {
+    margin-top: 10px;
+}
+
+/* Текст под кнопкой */
+.login-text {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #ccc;
+    text-align: center;
+}
+
+/* Ссылка "Login" зелёная неоновая */
+.login-link {
+    color: #39ff14;
+    font-weight: bold;
+    text-decoration: none;
+    margin-left: 5px;
+}
+
+.login-link:hover {
+    text-decoration: underline;
+    color: #32cd32;
+}
+
 
 button[type="submit"]:hover {
     background: #7CFC00;

@@ -1,0 +1,80 @@
+body {
+    background-color: #000;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    color: #7CFC00;
+}
+
+/* Контейнер */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Заголовок */
+.main-title {
+    text-align: center;
+    font-size: 48px;
+    font-weight: bold;
+    color: #7CFC00;
+    margin-bottom: 20px;
+    text-shadow: 0 0 15px rgba(124, 252, 0, 0.6);
+}
+
+/* Блок профиля */
+#profileInfo {
+    background: #111;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 50px rgb(239, 86, 214);
+    width: 350px;
+    font-size: 16px;
+}
+
+#profileInfo p {
+    margin: 10px 0;
+}
+
+#profileInfo strong {
+    color: #39ff14;
+}
+
+/* Заголовок блока */
+h2 {
+    text-align: center;
+    color: #7CFC00;
+    margin-bottom: 20px;
+}
+
+/* Кнопка logout */
+#logoutBtn {
+    width: 100%;
+    padding: 10px;
+    background: #fff;
+    color: #000;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    margin-top: 15px;
+    transition: background 0.3s, color 0.3s;
+}
+
+#logoutBtn:hover {
+    background: #7CFC00;
+    color: #000;
+}
+
+/* Сообщения */
+#message {
+    text-align: center;
+    margin-top: 15px;
+    color: #ff4444;
+}

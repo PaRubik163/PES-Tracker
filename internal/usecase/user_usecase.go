@@ -81,14 +81,7 @@ func (us *UserUseCase) Login(login, pass string) (*dto.UserSession, error) {
 		return nil, err
 	}
 
-	session := &dto.UserSession{
-		ID: userDB.ID,
-		Login: userDB.Login,
-		Jwt: resp.Token,
-		CreateSessionAt: time.Now(),
-	}
-
-	err = us.redisRepo.SaveUser(resp.ID, session)
+	subQuntity, err := us.userRepo.CountUsersSubscription(login)
 	if err != nil{
 		return nil, err
 	}
@@ -97,6 +90,22 @@ func (us *UserUseCase) Login(login, pass string) (*dto.UserSession, error) {
 		return nil, err
 	}
 	
+	session := &dto.UserSession{
+		ID: userDB.ID,
+		Login: userDB.Login,
+		Token: resp.Token,
+		SubscriptionsQuantity: subQuntity,
+		//expenses
+		//income
+		CreateSessionAt: time.Now(),
+	}
+
+	err = us.redisRepo.SaveUser(resp.ID, session)
+
+	if err != nil{
+		return nil, err
+	}
+
 	return session, nil
 }
 

@@ -2,16 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="../static/login.css">
     <title>Login</title>
 </head>
 <body>
-    <h2>Login</h2>
     <form id="loginForm">
-        <label>Email:</label><br>
-        <input type="text" id="login" name="login"><br><br>
-        <label>Password:</label><br>
-        <input type="password" id="password" name="password"><br><br>
+        <h1 class="main-title">PES Tracker</h1>
+        <h2>Login</h2>
+        <label>Email:</label>
+        <input type="text" id="login" name="login">
+
+        <label>Password:</label>
+        <input type="password" id="password" name="password">
+
         <button type="submit">Login</button>
+        <p id="message"></p>
     </form>
 
     <p id="message"></p>
@@ -32,7 +37,7 @@
             const result = await response.json();
 
             if (response.ok) {
-                document.getElementById("message").innerText = "Login successful!";
+                document.getElementById("message").innerText = result.message;
                 localStorage.setItem("token", result.token); // сохраним JWT
                 setTimeout(() => {
                     window.location.href = "/me";

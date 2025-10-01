@@ -4,13 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Subscriptions</title>
+    <link rel="stylesheet" href="../static/subscriptions.css">
 </head>
 <body>
-    <h2>Subscriptions</h2>
-    <div id="SubscriptionsInfo"></div>
+    <div class="container">
+        <h1 class="main-title">PES Tracker</h1>
 
-    <button id="getme">Profile</button>
-    <p id="message"></p>
+        <h2>Subscriptions</h2>
+        <div id="SubscriptionsInfo" class="subscriptions-list"></div>
+
+        <div class="actions">
+            <button id="getme" class="btn">Profile</button>
+            <a href="/new_subscription" class="btn-link">➕ Add Subscription</a>
+        </div>
+
+        <p id="message"></p>
+    </div>
 
     <script>
         async function loadSubscriptions() {
@@ -39,19 +48,43 @@
 
             data.forEach(sub => {
                 const subDiv = document.createElement("div");
-                subDiv.style.border = "1px solid #ccc";
-                subDiv.style.margin = "10px";
-                subDiv.style.padding = "10px";
+                subDiv.classList.add("subscription-card");
                 subDiv.innerHTML = `
-                    <p><strong>Name:</strong> ${sub.name}</p>
-                    <p><strong>Amount:</strong> ${sub.amount}</p>
-                    <p><strong>Url:</strong> <a href="${sub.url}" target="_blank">${sub.url}</a></p>
-                    <p><strong>Started at:</strong> ${sub.start_date}</p>
-                    <p><strong>Period:</strong> ${sub.billing_period}</p>
-                    <p><strong>Next Billing Date:</strong> ${sub.next_billing_date}</p>
+                    <button class="delete-btn" title="Delete Subscription">🗑</button>
+                    <p><strong>Name:</strong> <span class="value">${sub.name}</span></p>
+                    <p><strong>Amount:</strong> <span class="value">$${sub.amount}</span></p>
+                    <p><strong>Url:</strong> <a class="value-link" href="${sub.url}" target="_blank">${sub.url}</a></p>
+                    <p><strong>Started at:</strong> <span class="value">${sub.start_date.split("T")[0]}</span></p>
+                    <p><strong>Period:</strong> <span class="value">${sub.billing_period}</span></p>
+                    <p><strong>Next Billing Date:</strong> <span class="value">${sub.next_billing_date.split("T")[0]}</span></p>
                 `;
+
+                const deleteBtn = subDiv.querySelector(".delete-btn");
+                deleteBtn.addEventListener("click", async () => {
+                    await deleteSubscription(sub.id, subDiv);
+                });
+
                 container.appendChild(subDiv);
             });
+        }
+
+        async function deleteSubscription(id, element) {
+            const token = localStorage.getItem("token");
+            if (!token) return;
+
+            const response = await fetch(`/api/v1/subscription/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            });
+
+            if (response.ok) {
+                element.remove();
+            } else {
+                const data = await response.json();
+                document.getElementById("message").innerText = data.error || "Failed to delete subscription!";
+            }
         }
 
         function GoToProfile() {

@@ -30,6 +30,15 @@ func (ur *UserRepository) GetByLogin(login string) (*entity.User, error) {
 	return user, nil
 }
 
-func (ur *UserRepository) UpdateLogin(login string) error{
+func (ur *UserRepository) UpdateLogin(login string) error {
 	return ur.db.Model(entity.User{}).Where("login = ?", login).Update("last_login", time.Now()).Error
+}
+
+//counting quantity users subscriptions
+func (ur *UserRepository) CountUsersSubscription(login string) (int64,error) {
+	var count int64
+	return count, ur.db.Table("subscriptions").
+    			 Joins("JOIN users ON subscriptions.user_id = users.id").
+    			 Where("users.login = ?", login).
+    			 Count(&count).Error
 }

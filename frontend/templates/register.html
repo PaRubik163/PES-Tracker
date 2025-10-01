@@ -3,21 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <title>Register</title>
+    <link rel="stylesheet" href="../static/login.css">
 </head>
 <body>
-    <h2>Register</h2>
-    <form id="loginForm">
-        <label>Email:</label><br>
-        <input type="text" id="login" name="login"><br><br>
-        <label>Password:</label><br>
-        <input type="password" id="password" name="password"><br><br>
-        <button type="submit">Login</button>
-    </form>
+    <div class="container">
+        <h1 class="main-title">PES Tracker</h1>
 
-    <p id="message"></p>
+        <form id="registerForm">
+            <h2>Register</h2>
+            <label>Email:</label>
+            <input type="text" id="login" name="login">
+
+            <label>Password:</label>
+            <input type="password" id="password" name="password">
+
+            <button type="submit">Register</button>
+            
+            <p class="login-text">
+                Already have an account?
+                <a href="/login" class="login-link">Login</a>
+            </p>
+            <p id="message"></p>
+        </form>
+    </div>
 
     <script>
-        document.getElementById("loginForm").addEventListener("submit", async function(event) {
+        document.getElementById("registerForm").addEventListener("submit", async function(event) {
             event.preventDefault();
 
             const login = document.getElementById("login").value;
@@ -32,12 +43,12 @@
             const result = await response.json();
 
             if (response.ok) {
-                document.getElementById("message").innerText = "user registered";
+                document.getElementById("message").innerText = result.message || "Registration successful!";
                 setTimeout(() => {
                     window.location.href = "/login";
                 }, 1000);
             } else {
-                document.getElementById("message").innerText = result.error || "Login failed!";
+                document.getElementById("message").innerText = result.error || "Registration failed!";
             }
         });
     </script>

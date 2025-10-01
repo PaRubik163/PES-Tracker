@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+    <link rel="stylesheet" href="../static/profile.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="main-title">PES Tracker</h1>
+
+        <div id="profileInfo">
+            <h2>Profile</h2>
+            <p><strong>ID:</strong> <span class="value" id="userID"></span></p>
+            <p><strong>Login:</strong> <span class="value" id="userLogin"></span></p>
+            <p>
+                <a href="/subscriptions" class="value-link">
+                    Subscriptions:
+                    <span class="value" id="userSubscriptions"></span>
+                </a>
+            </p>
+            <p>
+                <a href="/expenses" class="value-link">
+                    Expenses:
+                    <span class="value" id="userExpenses"></span>
+                </a>
+            </p>
+            <p>
+                <a href="/income" class="value-link">
+                    Income:
+                    <span class="value" id="userIncome"></span>
+                </a>
+            </p>
+            <p><strong>Last Login:</strong> <span class="value" id="lastLogin"></span></p>
+            <button id="logoutBtn">Logout</button>
+        </div>
+
+        <p id="message"></p>
+    </div>
+
+    <script>
+        async function loadProfile() {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                document.getElementById("message").innerText = "You are not logged in!";
+                return;
+            }
+
+            const response = await fetch("/api/v1/me", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
+                }
+            });
+
+            if (!response.ok) {
+                document.getElementById("message").innerText = "Failed to load profile!";
+                return;
+            }
+
+            const data = await response.json();
+
+            document.getElementById("userID").innerText = data.id;
+            document.getElementById("userLogin").innerText = data.login;
+            document.getElementById("userSubscriptions").innerText = data.subscriptions_quantity;
+            document.getElementById("userExpenses").innerText = data.expenses_month;
+            document.getElementById("userIncome").innerText = data.income_month;
+
+            document.getElementById("lastLogin").innerText = data.created_session_at
+                ? formatDate(data.created_session_at)
+                : "Unknown";
+        }
+
+        function formatDate(isoString) {
+            const date = new Date(isoString);
+            return date.toLocaleString("en-GB", {
+                day: "2-digit",
+                month: "long",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit"
+            });
+        }
+
+        async function logout() {
+            const token = localStorage.getItem("token");
+            if (!token) return;
+
+            const response = await fetch("/api/v1/logout", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
+                }
+            });
+
+            if (response.ok) {
+                localStorage.removeItem("token");
+                window.location.href = "/login";
+            } else {
+                const data = await response.json();
+                document.getElementById("message").innerText = data.error || "Logout failed!";
+            }
+        }
+
+        document.getElementById("logoutBtn").addEventListener("click", logout);
+
+        window.onload = loadProfile;
+    </script>
+</body>
+</html>

@@ -61,11 +61,15 @@ func (uh *UserHandler) HandlerLogin(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "login successful",
-		"token": user.Jwt,
+		"message": "Welcome to the PES Tracker",
+		"token": user.Token,
 		"user": gin.H{
 			"id": user.ID,
 			"login": user.Login,
+			"subscriptions_quantity": user.SubscriptionsQuantity,
+			"expenses_month": user.ExpensesMonth,
+			"income_month": user.IncomeMonth,
+			"create_session_at": user.CreateSessionAt,
 		},
 	})
 }
@@ -102,7 +106,10 @@ func (uh *UserHandler) HandlerGetMe(c *gin.Context){
 	c.JSON(http.StatusOK, gin.H{
 		"id": userSession.ID,
 		"login": userSession.Login,
-		"token": userSession.Jwt,
+		"token": userSession.Token,
+		"subscriptions_quantity": userSession.SubscriptionsQuantity,
+		"expenses_month": userSession.ExpensesMonth,
+		"income_month": userSession.IncomeMonth,
 		"created_session_at": userSession.CreateSessionAt,
 	})
 }

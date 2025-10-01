@@ -16,7 +16,7 @@
             <p><strong>Subscriptions:</strong> <span id="userSubscriptions"></span></p>
             <p><strong>Expenses:</strong> <span id="userExpenses"></span></p>
             <p><strong>Income:</strong> <span id="userIncome"></span></p>
-            <p><strong>Session Created At:</strong> <span id="sessionCreated"></span></p>
+            <p><strong>Last Login:</strong> <span id="lastLogin"></span></p>
             <button id="logoutBtn">Logout</button>
         </div>
 
@@ -50,8 +50,22 @@
             document.getElementById("userLogin").innerText = data.login;
             document.getElementById("userSubscriptions").innerText = data.subscriptions_quantity;
             document.getElementById("userExpenses").innerText = data.expenses_month;
-            document.getElementById("userIncome").innerText = data.income_month
-            document.getElementById("sessionCreated").innerText = data.created_session_at;
+            document.getElementById("userIncome").innerText = data.income_month;
+
+            document.getElementById("lastLogin").innerText = data.created_session_at
+                ? formatDate(data.created_session_at)
+                : "Unknown";
+        }
+
+        function formatDate(isoString) {
+            const date = new Date(isoString);
+            return date.toLocaleString("en-GB", {
+                day: "2-digit",
+                month: "long",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit"
+            });
         }
 
         async function logout() {

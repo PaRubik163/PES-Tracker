@@ -49,12 +49,22 @@ func NewApp(c *config.Config) (*App, error) {
 	pgh := handler.NewPageHandler() //here processing pages
 
 	//user section
-	ur := repository.NewUserRepository(db)
+	ur, err := repository.NewUserRepository(db)
+
+	if err != nil{
+		return nil, err
+	}
+
 	us := usecase.NewUserUseCase(ur,redisRepo, jwtService)
 	uh := handler.NewUserHandler(us)
 
 	//subscription section
-	sr := repository.NewSubscriptionRepo(db)
+	sr, err := repository.NewSubscriptionRepo(db)
+
+	if err != nil{
+		return nil, err
+	}
+	
 	sUseCase := usecase.NewSubscriptionUseCase(sr)
 	sh := handler.NewSubscriptionHandler(sUseCase)
 

@@ -11,9 +11,12 @@ type UserRepository struct{
 	db *gorm.DB
 }
 
-func NewUserRepository(db *gorm.DB) *UserRepository {
-	db.AutoMigrate(&entity.User{})
-	return &UserRepository{db: db}
+func NewUserRepository(db *gorm.DB) (*UserRepository, error) {
+	if err := db.AutoMigrate(&entity.User{}); err != nil{
+		return nil, err
+	}
+	
+	return &UserRepository{db: db}, nil
 }
 
 func (ur *UserRepository) Create(user *entity.User) error {

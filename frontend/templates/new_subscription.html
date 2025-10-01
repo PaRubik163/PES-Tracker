@@ -2,47 +2,78 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Subscription</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Subscription</title>
+    <link rel="stylesheet" href="../static/new_subscription.css">
 </head>
 <body>
-    <h2>New Subscription</h2>
-    <form id="newSub">
-        <label>Name:</label><br>
-        <input type="text" id="name" name="name"><br><br>
-        <label>Amount:</label><br>
-        <input type="amount" id="amount" name="amount" step="0.01"><br><br>
-        <label>Url:</label><br>
-        <input type="text" id="url" name="url"><br><br>
-        <label>Started at:</label><br>
-        <input type="date" id="start_date" name="start_date"><br><br>
-        <label>Period:</label><br>
-        <input type="text" id="billing_period" name="billing_period"><br><br>
-        <label>Next Billing Date:</label><br>
-        <input type="date" id="next_billing_date" name="next_billing_date"><br><br>
-        <button type="button" id="add">Add</button>
-        <button type="button" id="all_subscriptions">All Subscriptions</button>
-    </form>
+    <div class="container">
+        <h1 class="main-title">PES Tracker</h1>
 
-    <p id="message"></p>
+        <div class="form-card">
+            <h2>Add New Subscription</h2>
+            <form id="newSub">
+                <div class="form-group">
+                    <label>Name:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Amount:</label>
+                    <input type="number" id="amount" name="amount" step="0.01" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Url:</label>
+                    <input type="url" id="url" name="url">
+                </div>
+
+                <div class="form-group">
+                    <label>Started at:</label>
+                    <input type="date" id="start_date" name="start_date" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Period:</label>
+                    <select id="billing_period" name="billing_period" required>
+                        <option value="" disabled selected>Select period</option>
+                        <option value="day">Day</option>
+                        <option value="month">Month</option>
+                        <option value="year">Year</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Next Billing Date:</label>
+                    <input type="date" id="next_billing_date" name="next_billing_date" required>
+                </div>
+
+                <div class="actions">
+                    <button type="button" id="add" class="btn">➕ Add</button>
+                    <button type="button" id="all_subscriptions" class="btn-alt">📋 All Subscriptions</button>
+                </div>
+            </form>
+            <p id="message"></p>
+        </div>
+    </div>
 
     <script>
         async function newSubscription() {
-            const name = document.getElementById("name").value;
-
+            const name = document.getElementById("name").value.trim();
             const amount = parseFloat(document.getElementById("amount").value);
-            if (isNaN(amount)) {
-                document.getElementById("message").innerText = "Amount must be a number!";
-                return;
-            }
-
-            const url = document.getElementById("url").value;
+            const url = document.getElementById("url").value.trim();
             const start_date = new Date(document.getElementById("start_date").value).toISOString();
             const billing_period = document.getElementById("billing_period").value;
             const next_billing_date = new Date(document.getElementById("next_billing_date").value).toISOString();
 
-            const token = localStorage.getItem("token")
+            if (!name || isNaN(amount) || !billing_period) {
+                document.getElementById("message").innerText = "⚠️ Please fill in all required fields!";
+                return;
+            }
+
+            const token = localStorage.getItem("token");
             if (!token) {
-                document.getElementById("message").innerText = "You are not logged in!";
+                document.getElementById("message").innerText = "⚠️ You are not logged in!";
                 return;
             }
 
@@ -53,25 +84,23 @@
                     "Authorization": "Bearer " + token
                 },
                 body: JSON.stringify({ name, amount, url, start_date, billing_period, next_billing_date })
-            })
+            });
 
-            if (response.ok){
-                document.getElementById("message").innerText = "Subscription added!";
+            if (response.ok) {
+                document.getElementById("message").innerText = "✅ Subscription added!";
+                setTimeout(() => window.location.href = "/subscriptions", 1000);
             } else {
                 const err = await response.text();
-                document.getElementById("message").innerText = "Error: " + err;
+                document.getElementById("message").innerText = "❌ Error: " + err;
             }
         }
 
-        async function allSubscriptions() {
-            setTimeout(() => {
-                window.location.href = "/subscriptions";
-            }, 1000);
+        function allSubscriptions() {
+            window.location.href = "/subscriptions";
         }
 
-        document.getElementById("add").addEventListener("click", newSubscription)
-        document.getElementById("all_subscriptions").addEventListener("click", allSubscriptions)
-       
+        document.getElementById("add").addEventListener("click", newSubscription);
+        document.getElementById("all_subscriptions").addEventListener("click", allSubscriptions);
     </script>
 </body>
 </html>

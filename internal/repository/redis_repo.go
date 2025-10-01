@@ -65,6 +65,6 @@ func (r *RedisRepo) GetUser(uuid string) (*dto.UserSession, error) {
 	if err != nil{
 		return nil, err
 	}
-	fmt.Println(userSession)
+
 	return userSession, nil
 }

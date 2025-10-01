@@ -12,9 +12,9 @@ type Subscription struct {
 	Name            string    `gorm:"notNull;column:subscription_name" json:"name"`
 	Amount          float32   `gorm:"column:amount" json:"amount"`
 	Url             string    `gorm:"column:url" json:"url"`
-	StartDate       time.Time `gorm:"notNull;column:start_date" json:"start_date"`
+	StartDate       time.Time `gorm:"type:date;notNull;column:start_date" json:"start_date"`
 	BillingPeriod   string    `gorm:"notNull;column:billing_period" json:"billing_period"`
-	NextBillingDate time.Time `gorm:"notNull;column:next_billing_date" json:"next_billing_date"`
+	NextBillingDate time.Time `gorm:"type:date;notNull;column:next_billing_date" json:"next_billing_date"`
 }
 
 

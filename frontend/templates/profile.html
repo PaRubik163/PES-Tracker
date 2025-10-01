@@ -11,12 +11,27 @@
 
         <div id="profileInfo">
             <h2>Profile</h2>
-            <p><strong>ID:</strong> <span id="userID"></span></p>
-            <p><strong>Login:</strong> <span id="userLogin"></span></p>
-            <p><strong>Subscriptions:</strong> <span id="userSubscriptions"></span></p>
-            <p><strong>Expenses:</strong> <span id="userExpenses"></span></p>
-            <p><strong>Income:</strong> <span id="userIncome"></span></p>
-            <p><strong>Last Login:</strong> <span id="lastLogin"></span></p>
+            <p><strong>ID:</strong> <span class="value" id="userID"></span></p>
+            <p><strong>Login:</strong> <span class="value" id="userLogin"></span></p>
+            <p>
+                <a href="/subscriptions" class="value-link">
+                    Subscriptions:
+                    <span class="value" id="userSubscriptions"></span>
+                </a>
+            </p>
+            <p>
+                <a href="/expenses" class="value-link">
+                    Expenses:
+                    <span class="value" id="userExpenses"></span>
+                </a>
+            </p>
+            <p>
+                <a href="/income" class="value-link">
+                    Income:
+                    <span class="value" id="userIncome"></span>
+                </a>
+            </p>
+            <p><strong>Last Login:</strong> <span class="value" id="lastLogin"></span></p>
             <button id="logoutBtn">Logout</button>
         </div>
 

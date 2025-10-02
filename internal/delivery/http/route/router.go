@@ -5,6 +5,7 @@ import (
 	"tracker/pkg/jwt"
 	"tracker/internal/delivery/middleware"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 type Router struct{
@@ -42,6 +43,10 @@ func (r *Router) setupPageRoutes() {
 }
 
 func (r *Router) setupAPIRoutes() {
+	r.Engine.GET("/", func(c *gin.Context) {
+    	c.Redirect(http.StatusFound, "/register")
+	})
+
     api := r.Engine.Group("/api/v1")
     {
         api.POST("/register", r.userHandler.HandlerRegister)

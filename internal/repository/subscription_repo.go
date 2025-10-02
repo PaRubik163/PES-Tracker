@@ -10,9 +10,11 @@ type SubscriptionRepo struct {
 	db *gorm.DB
 }
 
-func NewSubscriptionRepo(db *gorm.DB) (*SubscriptionRepo) {
-	db.AutoMigrate(&entity.Subscription{})
-	return &SubscriptionRepo{db: db}
+func NewSubscriptionRepo(db *gorm.DB) (*SubscriptionRepo, error) {
+	if err := db.AutoMigrate(&entity.Subscription{}); err != nil{
+		return nil, err
+	}
+	return &SubscriptionRepo{db: db}, nil
 }
 
 func (sr *SubscriptionRepo) Create(subscription *entity.Subscription) (error) {

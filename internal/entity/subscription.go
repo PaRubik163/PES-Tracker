@@ -10,7 +10,7 @@ type Subscription struct {
 	UserID			int		  `gorm:"notNull;column:user_id" json:"user_id`	
 	User 			User      `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
 	Name            string    `gorm:"notNull;column:subscription_name" json:"name"`
-	Amount          float32   `gorm:"column:amount" json:"amount"`
+	Amount          float32   `gorm:"type:money;column:amount" json:"amount"`
 	Url             string    `gorm:"column:url" json:"url"`
 	StartDate       time.Time `gorm:"type:date;notNull;column:start_date" json:"start_date"`
 	BillingPeriod   string    `gorm:"notNull;column:billing_period" json:"billing_period"`

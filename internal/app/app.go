@@ -26,6 +26,9 @@ type App struct{
 	SubscriptionRepo *repository.SubscriptionRepo
 	SubscriptionUseCase *usecase.SubscriptionUseCase
 	SubscriptionHandler *handler.SubscriptionHandler
+	IncomeRepo *repository.IncomeRepository
+	IncomeUseCase *usecase.IncomeUseCase
+	IncomeHandler *handler.IncomeHandler
 	Router *route.Router
 }
 
@@ -68,7 +71,17 @@ func NewApp(c *config.Config) (*App, error) {
 	sUseCase := usecase.NewSubscriptionUseCase(sr)
 	sh := handler.NewSubscriptionHandler(sUseCase)
 
-	router := route.NewRouter(pgh, uh, sh, jwtService) //gin section
+	inR, err := repository.NewIncomeRepository(db)
+
+	if err != nil{
+		return nil, err
+	}
+
+	inUseCase := usecase.NewIncomeUseCase(inR)
+	inH := handler.NewIncomeHandler(inUseCase)
+
+	//gin section
+	router := route.NewRouter(pgh, uh, sh, jwtService) 
 	router.SetupRouter()
 	
 	a := &App{
@@ -83,6 +96,9 @@ func NewApp(c *config.Config) (*App, error) {
 		SubscriptionRepo: sr,
 		SubscriptionUseCase: sUseCase,
 		SubscriptionHandler: sh,
+		IncomeRepo: inR,
+		IncomeUseCase: inUseCase,
+		IncomeHandler: inH,
 		Router: router,
 	}
 	return a, nil

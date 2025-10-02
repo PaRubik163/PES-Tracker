@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Income</title>
+    <link rel="stylesheet" href="../static/new_income.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="main-title">PES Tracker</h1>
+
+        <div class="form-card">
+            <h2>Add Income</h2>
+            <form id="newincome">
+                <div class="form-group">
+                    <label>Title:</label>
+                    <input type="text" id="title" name="title" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Description:</label>
+                    <input type="text" id="description" name="description">
+                </div>
+
+                <div class="form-group">
+                    <label>Category:</label>
+                    <select id="category" name="category" required>
+                        <option value="" disabled selected>Select category</option>
+                        <option value="transfer">Transfer</option>
+                        <option value="supermarket">Supermarket</option>
+                        <option value="restaurant">Restaurant</option>
+                        <option value="fast_food">Fast Food</option>
+                        <option value="fuel">Fuel</option>
+                        <option value="various">Various</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Amount:</label>
+                    <input type="number" id="amount" name="amount" step="0.01" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Date:</label>
+                    <input type="date" id="date" name="date" required>
+                </div>
+
+                <div class="actions">
+                    <button type="button" id="add" class="btn">➕ Add</button>
+                    <button type="button" id="all_income" class="btn-alt">📋 All Income</button>
+                </div>
+            </form>
+            <p id="message"></p>
+        </div>
+    </div>
+
+    <script>
+        async function newIncome() {
+            const title = document.getElementById("title").value.trim();
+            const description = document.getElementById("description").value.trim()
+            const category = document.getElementById("category").value.trim()
+            const amount = parseFloat(document.getElementById("amount").value);
+            const income_date = new Date(document.getElementById("date").value).toISOString();
+
+            if (!title || isNaN(amount) || !category) {
+                document.getElementById("message").innerText = "⚠️ Please fill in all required fields!";
+                return;
+            }
+
+            const token = localStorage.getItem("token");
+            if (!token) {
+                document.getElementById("message").innerText = "⚠️ You are not logged in!";
+                return;
+            }
+
+            const response = await fetch("/api/v1/new_income", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
+                },
+                body: JSON.stringify({ title, description, category, amount, income_date })
+            });
+
+            if (response.ok) {
+                document.getElementById("message").innerText = "✅ Income added!";
+                setTimeout(() => window.location.href = "/income", 1000);
+            } else {
+                const err = await response.text();
+                document.getElementById("message").innerText = "❌ Error: " + err;
+            }
+        }
+
+        function allIncome() {
+            window.location.href = "/income";
+        }
+
+        document.getElementById("add").addEventListener("click", newIncome);
+        document.getElementById("all_income").addEventListener("click", allIncome);
+    </script>
+</body>
+</html>

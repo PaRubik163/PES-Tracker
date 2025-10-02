@@ -81,7 +81,7 @@ func NewApp(c *config.Config) (*App, error) {
 	inH := handler.NewIncomeHandler(inUseCase)
 
 	//gin section
-	router := route.NewRouter(pgh, uh, sh, jwtService) 
+	router := route.NewRouter(pgh, uh, sh, inH, jwtService) 
 	router.SetupRouter()
 	
 	a := &App{

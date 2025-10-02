@@ -18,3 +18,7 @@ func NewIncomeRepository(db *gorm.DB) (*IncomeRepository, error) {
 		db: db,
 	}, nil
 }
+
+func (inRepo *IncomeRepository) Create(income *entity.Income) error{
+	return inRepo.db.Create(income).Error
+}

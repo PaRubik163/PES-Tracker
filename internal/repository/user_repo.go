@@ -4,6 +4,7 @@ import (
 	"time"
 	"tracker/internal/entity"
 
+	"github.com/shopspring/decimal"
 	"gorm.io/gorm"
 )
 
@@ -47,8 +48,8 @@ func (ur *UserRepository) CountUsersSubscription(login string) (int64,error) {
 }
 
 //counting quantity users income
-func (ur *UserRepository) CountUsersIncome(login string) (int64, error) {
-	var amount int64
+func (ur *UserRepository) CountUsersIncome(login string) (decimal.Decimal, error) {
+	var amount decimal.Decimal
 	return amount, ur.db.Table("incomes").
 						Joins("JOIN users ON incomes.user_id = users.id").
 						Where("users.login = ?", login).

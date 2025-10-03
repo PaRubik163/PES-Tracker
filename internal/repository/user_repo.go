@@ -52,7 +52,7 @@ func (ur *UserRepository) CountUsersIncome(login string) (int64, error) {
 	return amount, ur.db.Table("incomes").
 						Joins("JOIN users ON incomes.user_id = users.id").
 						Where("users.login = ?", login).
-						Select("SUM(incomes.amount)").
+						Select("COALESCE(SUM(incomes.amount), 0)").
 						Scan(&amount).Error
 						
 }

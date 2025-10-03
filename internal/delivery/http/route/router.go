@@ -43,6 +43,7 @@ func (r *Router) setupPageRoutes() {
 	r.Engine.GET("/new_subscription", r.pageHandler.NewSubscription)
     r.Engine.GET("/subscriptions", r.pageHandler.GetAllSubscriptions)
 	r.Engine.GET("/new_income", r.pageHandler.NewIncome)
+	r.Engine.GET("/income", r.pageHandler.GetAllIncome)
 }
 
 func (r *Router) setupAPIRoutes() {
@@ -66,6 +67,8 @@ func (r *Router) setupAPIRoutes() {
 			auth.DELETE("/subscription/:id", r.subscriptionHandler.HandlerDeleteSubscription)
 
 			auth.POST("/new_income",r.incomeHandler.HandlerAddIncome)
+			auth.GET("/income", r.incomeHandler.HandlerGetAll)
+			auth.DELETE("/income/:id", r.incomeHandler.DeleteIncome)
         }
     }
 }

@@ -101,7 +101,7 @@ func (us *UserUseCase) Login(login, pass string) (*dto.UserSession, error) {
 		Token: resp.Token,
 		SubscriptionsQuantity: subQuntity,
 		//expenses
-		IncomeMonth: float32(incomeQuantity),
+		IncomeMonth: incomeQuantity,
 		CreateSessionAt: time.Now(),
 	}
 

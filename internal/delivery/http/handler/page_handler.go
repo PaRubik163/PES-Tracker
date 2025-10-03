@@ -31,3 +31,11 @@ func (pgh *PageHandler) NewSubscription(c *gin.Context) {
 func (pgh *PageHandler) GetAllSubscriptions(c *gin.Context) {
 	c.HTML(http.StatusOK, "all_subscriptions.html", nil)
 }
+
+func (pgh *PageHandler) NewIncome(c *gin.Context) {
+	c.HTML(http.StatusOK, "new_income.html", nil)
+}
+
+func (pgh *PageHandler) GetAllIncome(c *gin.Context) {
+	c.HTML(http.StatusOK, "all_income.html", nil)
+}

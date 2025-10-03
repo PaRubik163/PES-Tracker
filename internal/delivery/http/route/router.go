@@ -13,10 +13,11 @@ type Router struct{
 	pageHandler *handler.PageHandler
 	userHandler *handler.UserHandler
 	subscriptionHandler *handler.SubscriptionHandler
+	incomeHandler *handler.IncomeHandler
 	jwtService *jwt.Jwt
 }
 
-func NewRouter(ph *handler.PageHandler, uh *handler.UserHandler, sh *handler.SubscriptionHandler, jwt *jwt.Jwt) *Router {
+func NewRouter(ph *handler.PageHandler, uh *handler.UserHandler, sh *handler.SubscriptionHandler,inH *handler.IncomeHandler, jwt *jwt.Jwt) *Router {
 	router := gin.Default()
 	router.LoadHTMLGlob("./frontend/templates/*")
 	router.Static("/static", "./frontend/static")
@@ -25,6 +26,7 @@ func NewRouter(ph *handler.PageHandler, uh *handler.UserHandler, sh *handler.Sub
 		pageHandler: ph,
 		userHandler: uh,
 		subscriptionHandler: sh,
+		incomeHandler: inH,
 		jwtService: jwt,
 	}
 }
@@ -40,6 +42,8 @@ func (r *Router) setupPageRoutes() {
 	r.Engine.GET("/me", r.pageHandler.GetMe)
 	r.Engine.GET("/new_subscription", r.pageHandler.NewSubscription)
     r.Engine.GET("/subscriptions", r.pageHandler.GetAllSubscriptions)
+	r.Engine.GET("/new_income", r.pageHandler.NewIncome)
+	r.Engine.GET("/income", r.pageHandler.GetAllIncome)
 }
 
 func (r *Router) setupAPIRoutes() {
@@ -61,6 +65,10 @@ func (r *Router) setupAPIRoutes() {
             auth.POST("/new_subscription", r.subscriptionHandler.HandlerAdd)
             auth.GET("/subscriptions", r.subscriptionHandler.HandlerGetAll)
 			auth.DELETE("/subscription/:id", r.subscriptionHandler.HandlerDeleteSubscription)
+
+			auth.POST("/new_income",r.incomeHandler.HandlerAddIncome)
+			auth.GET("/income", r.incomeHandler.HandlerGetAll)
+			auth.DELETE("/income/:id", r.incomeHandler.DeleteIncome)
         }
     }
 }

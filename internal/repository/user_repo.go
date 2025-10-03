@@ -45,3 +45,14 @@ func (ur *UserRepository) CountUsersSubscription(login string) (int64,error) {
     			 Where("users.login = ?", login).
     			 Count(&count).Error
 }
+
+//counting quantity users income
+func (ur *UserRepository) CountUsersIncome(login string) (int64, error) {
+	var amount int64
+	return amount, ur.db.Table("incomes").
+						Joins("JOIN users ON incomes.user_id = users.id").
+						Where("users.login = ?", login).
+						Select("SUM(incomes.amount)").
+						Scan(&amount).Error
+						
+}

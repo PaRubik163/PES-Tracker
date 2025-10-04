@@ -71,6 +71,10 @@ func (r *Router) setupAPIRoutes() {
 			auth.POST("/new_income",r.incomeHandler.HandlerAddIncome)
 			auth.GET("/income", r.incomeHandler.HandlerGetAll)
 			auth.DELETE("/income/:id", r.incomeHandler.DeleteIncome)
+
+			auth.POST("/new_expense", r.expenseHandler.HandlerAdd)
+			auth.GET("/expenses", r.expenseHandler.HandlerGetAll)
+			auth.DELETE("/expense/:id", r.expenseHandler.HandlerDeleteExpense)
         }
     }
 }

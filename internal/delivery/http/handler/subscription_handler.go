@@ -29,7 +29,7 @@ func (sh *SubscriptionHandler) HandlerAdd(c *gin.Context) {
 	sub := &entity.Subscription{}
 
 	if err := c.ShouldBindJSON(sub); err != nil{
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid requset"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
 		return
 	}
 
@@ -79,7 +79,7 @@ func (sh *SubscriptionHandler) HandlerDeleteSubscription(c *gin.Context) {
 	id, err := strconv.Atoi(subIdStr)
 
 	if err != nil{
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 

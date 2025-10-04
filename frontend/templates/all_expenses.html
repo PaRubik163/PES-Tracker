@@ -4,32 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Income</title>
-    <link rel="stylesheet" href="../static/all_income.css">
+    <link rel="stylesheet" href="../static/all_expenses.css">
 </head>
 <body>
     <div class="container">
         <h1 class="main-title">PES Tracker</h1>
 
-        <h2>Income</h2>
-        <div id="IncomeInfo" class="income-list"></div>
+        <h2>Expenses</h2>
+        <div id="ExpenseInfo" class="expense-list"></div>
 
         <div class="actions">
             <button id="getme" class="btn">Profile</button>
-            <a href="/new_income" class="btn-link">➕ Add income</a>
+            <a href="/new_expense" class="btn-link">➕ Add Expense</a>
         </div>
 
         <p id="message"></p>
     </div>
 
     <script>
-        async function loadIncome() {
+        async function loadExpense() {
             const token = localStorage.getItem("token");
             if (!token) {
                 document.getElementById("message").innerText = "You are not logged in!";
                 return;
             }
 
-            const response = await fetch("/api/v1/income", {
+            const response = await fetch("/api/v1/expenses", {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -43,34 +43,35 @@
             }
 
             const data = await response.json();
-            const container = document.getElementById("IncomeInfo");
+            const container = document.getElementById("ExpenseInfo");
             container.innerHTML = "";
 
-            data.forEach(income => {
-                const incomeDiv = document.createElement("div");
-                incomeDiv.classList.add("income-card");
-                incomeDiv.innerHTML = `
-                    <button class="delete-btn" title="Delete Income">🗑</button>
-                    <p><strong>Title:</strong> <span class="value">${income.title}</span></p>
-                    <p><strong>Description:</strong> <span class="value">${income.description}</span></p>
-                    <p><strong>Amount:</strong> <span class="value">${income.amount}</span></p>
-                    <p><strong>Date:</strong> <span class="value">${income.income_date.split("T")[0]}</span></p>
+            data.forEach(expense => {
+                const expenseDiv = document.createElement("div");
+                expenseDiv.classList.add("expense-card");
+                expenseDiv.innerHTML = `
+                    <button class="delete-btn" title="Delete Expense">🗑</button>
+                    <p><strong>Title:</strong> <span class="value">${expense.title}</span></p>
+                    <p><strong>Description:</strong> <span class="value">${expense.description}</span></p>
+                    <p><strong>Category:</strong> <span class="value">${expense.category}</span></p>
+                    <p><strong>Amount:</strong> <span class="value">${expense.amount}</span></p>
+                    <p><strong>Date:</strong> <span class="value">${expense.expense_date.split("T")[0]}</span></p>
                 `;
 
-                const deleteBtn = incomeDiv.querySelector(".delete-btn");
+                const deleteBtn = expenseDiv.querySelector(".delete-btn");
                 deleteBtn.addEventListener("click", async () => {
-                    await deleteIncome(income.id, incomeDiv);
+                    await deleteExpense(expense.id, expenseDiv);
                 });
 
-                container.appendChild(incomeDiv);
+                container.appendChild(expenseDiv);
             });
         }
 
-        async function deleteIncome(id, element) {
+        async function deleteExpense(id, element) {
             const token = localStorage.getItem("token");
             if (!token) return;
 
-            const response = await fetch(`/api/v1/income/${id}`, {
+            const response = await fetch(`/api/v1/expense/${id}`, {
                 method: "DELETE",
                 headers: {
                     "Authorization": "Bearer " + token
@@ -81,7 +82,7 @@
                 element.remove();
             } else {
                 const data = await response.json();
-                document.getElementById("message").innerText = data.error || "Failed to delete income!";
+                document.getElementById("message").innerText = data.error || "Failed to delete expense!";
             }
         }
 
@@ -91,7 +92,7 @@
 
         document.getElementById("getme").addEventListener("click", GoToProfile);
 
-        window.onload = loadIncome;
+        window.onload = loadExpense;
     </script>
 </body>
 </html>

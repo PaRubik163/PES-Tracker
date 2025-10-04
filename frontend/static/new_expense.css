@@ -1,0 +1,123 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #0f2027;
+    background: linear-gradient(135deg, #27190f, #432041, #2c5364);
+    color: #d6370f;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+}
+
+.main-title {
+    text-align: center;
+    font-size: 2.5rem;
+    color: #04f018;
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px #34e208, 0 0 1px #06df35;
+}
+
+.form-card {
+    background: rgba(44, 62, 80, 0.9);
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 0px 20px rgba(87, 231, 3, 0.904);
+    backdrop-filter: blur(6px);
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #04f018;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-bottom: 6px;
+    font-weight: bold;
+    color: #ecf0f1;
+}
+
+input, select {
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    background: #1a252f;
+    color: #ecf0f1;
+    outline: none;
+    transition: box-shadow 0.3s ease;
+}
+
+input:focus, select:focus {
+    box-shadow: 0 0 8px #04f018;
+}
+
+.actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.btn, .btn-alt {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.btn {
+    background:  #24f3e988;
+    color: #fff;
+}
+
+.btn:hover {
+    background: #91ff00;
+    transform: translateY(-2px);
+}
+
+.btn-alt {
+    background:  #24f3e988;
+    color: #fff;
+}
+
+.btn-alt:hover {
+    background:  #91ff00;
+    transform: translateY(-2px);
+}
+
+#message {
+    margin-top: 15px;
+    text-align: center;
+    font-weight: bold;
+    color: #f39c12;
+}
+
+.form-card {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.6s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

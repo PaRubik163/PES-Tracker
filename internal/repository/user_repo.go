@@ -57,3 +57,13 @@ func (ur *UserRepository) CountUsersIncome(login string) (decimal.Decimal, error
 						Scan(&amount).Error
 						
 }
+
+//counting quantity user expenses
+func (ur *UserRepository) CountUserExpenses(login string) (decimal.Decimal, error) {
+	var amount decimal.Decimal
+	return amount, ur.db.Table("expenses").
+						 Joins("JOIN users ON expenses.user_id = users.id").
+						 Where("users.login = ?", login).
+						 Select("COALESCE(SUM(expenses.amount), 0)").
+						 Scan(&amount).Error
+}

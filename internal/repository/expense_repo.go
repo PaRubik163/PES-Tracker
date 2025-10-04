@@ -19,3 +19,17 @@ func NewExpenseRepository(db *gorm.DB) (*ExpenseRepository, error) {
 		db: db,
 	}, nil
 }
+
+func (expRepo *ExpenseRepository) Create(expense *entity.Expense) error {
+	return expRepo.db.Create(&expense).Error
+}
+
+func (expRepo *ExpenseRepository) GetAll(userID int) ([]*entity.Expense, error) {
+	var expenses []*entity.Expense
+
+	return expenses, expRepo.db.Where("user_id = ?", userID).Find(&expenses).Error
+}
+
+func (expRepo *ExpenseRepository) DeleteByID(expenseID, userID int) error {
+	return expRepo.db.Where("id = ? AND user_id=?", expenseID, userID).Delete(&entity.Expense{}).Error
+}

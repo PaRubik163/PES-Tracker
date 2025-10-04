@@ -91,6 +91,11 @@ func (us *UserUseCase) Login(login, pass string) (*dto.UserSession, error) {
 		return nil, err
 	}
 
+	expensesQuantity, err := us.userRepo.CountUserExpenses(login)
+	if err != nil{
+		return nil, err
+	}
+
 	if err := us.userRepo.UpdateLogin(login); err != nil{
 		return nil, err
 	}
@@ -100,7 +105,7 @@ func (us *UserUseCase) Login(login, pass string) (*dto.UserSession, error) {
 		Login: userDB.Login,
 		Token: resp.Token,
 		SubscriptionsQuantity: subQuntity,
-		//expenses
+		ExpensesMonth: expensesQuantity,
 		IncomeMonth: incomeQuantity,
 		CreateSessionAt: time.Now(),
 	}

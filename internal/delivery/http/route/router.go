@@ -14,10 +14,11 @@ type Router struct{
 	userHandler *handler.UserHandler
 	subscriptionHandler *handler.SubscriptionHandler
 	incomeHandler *handler.IncomeHandler
+	expenseHandler *handler.ExpenseHandler
 	jwtService *jwt.Jwt
 }
 
-func NewRouter(ph *handler.PageHandler, uh *handler.UserHandler, sh *handler.SubscriptionHandler,inH *handler.IncomeHandler, jwt *jwt.Jwt) *Router {
+func NewRouter(ph *handler.PageHandler, uh *handler.UserHandler, sh *handler.SubscriptionHandler,inH *handler.IncomeHandler, expH *handler.ExpenseHandler,jwt *jwt.Jwt) *Router {
 	router := gin.Default()
 	router.LoadHTMLGlob("./frontend/templates/*")
 	router.Static("/static", "./frontend/static")
@@ -27,6 +28,7 @@ func NewRouter(ph *handler.PageHandler, uh *handler.UserHandler, sh *handler.Sub
 		userHandler: uh,
 		subscriptionHandler: sh,
 		incomeHandler: inH,
+		expenseHandler: expH,
 		jwtService: jwt,
 	}
 }

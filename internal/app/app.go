@@ -29,6 +29,9 @@ type App struct{
 	IncomeRepo *repository.IncomeRepository
 	IncomeUseCase *usecase.IncomeUseCase
 	IncomeHandler *handler.IncomeHandler
+	ExpenseRepo *repository.ExpenseRepository
+	ExpenseUseCase *usecase.ExpenseUseCase
+	ExpenseHandler *handler.ExpenseHandler
 	Router *route.Router
 }
 
@@ -52,36 +55,46 @@ func NewApp(c *config.Config) (*App, error) {
 	pgh := handler.NewPageHandler() //here processing pages
 
 	//user section
-	ur, err := repository.NewUserRepository(db)
+	userRepo, err := repository.NewUserRepository(db)
 
 	if err != nil{
 		return nil, err
 	}
 
-	us := usecase.NewUserUseCase(ur,redisRepo, jwtService)
-	uh := handler.NewUserHandler(us)
+	userUseCase := usecase.NewUserUseCase(userRepo, redisRepo, jwtService)
+	userHandler := handler.NewUserHandler(userUseCase)
 
 	//subscription section
-	sr, err := repository.NewSubscriptionRepo(db)
+	subRepo, err := repository.NewSubscriptionRepo(db)
 
 	if err != nil{
 		return nil, err
 	}
 	
-	sUseCase := usecase.NewSubscriptionUseCase(sr)
-	sh := handler.NewSubscriptionHandler(sUseCase)
+	subUseCase := usecase.NewSubscriptionUseCase(subRepo)
+	subHandler := handler.NewSubscriptionHandler(subUseCase)
 
-	inR, err := repository.NewIncomeRepository(db)
+	//income section
+	inRepo, err := repository.NewIncomeRepository(db)
 
 	if err != nil{
 		return nil, err
 	}
 
-	inUseCase := usecase.NewIncomeUseCase(inR)
-	inH := handler.NewIncomeHandler(inUseCase)
+	inUseCase := usecase.NewIncomeUseCase(inRepo)
+	inHandler := handler.NewIncomeHandler(inUseCase)
 
+	//expense section
+	expRepo, err := repository.NewExpenseRepository(db)
+	
+	if err != nil{
+		return nil, err
+	}
+
+	expUseCase := usecase.NewExpenseUseCase(expRepo)
+	expHandler := handler.NewExpenseHandler(expUseCase)
 	//gin section
-	router := route.NewRouter(pgh, uh, sh, inH, jwtService) 
+	router := route.NewRouter(pgh, userHandler, subHandler, inHandler, expHandler, jwtService) 
 	router.SetupRouter()
 	
 	a := &App{
@@ -90,15 +103,18 @@ func NewApp(c *config.Config) (*App, error) {
 		Redis: redisRepo,
 		Jwt: jwtService,
 		Page: pgh,
-		UserRepo: ur,
-		UserUseCase: us,
-		UserHandler: uh,
-		SubscriptionRepo: sr,
-		SubscriptionUseCase: sUseCase,
-		SubscriptionHandler: sh,
-		IncomeRepo: inR,
+		UserRepo: userRepo,
+		UserUseCase: userUseCase,
+		UserHandler: userHandler,
+		SubscriptionRepo: subRepo,
+		SubscriptionUseCase: subUseCase,
+		SubscriptionHandler: subHandler,
+		IncomeRepo: inRepo,
 		IncomeUseCase: inUseCase,
-		IncomeHandler: inH,
+		IncomeHandler: inHandler,
+		ExpenseRepo: expRepo,
+		ExpenseUseCase: expUseCase,
+		ExpenseHandler: expHandler,
 		Router: router,
 	}
 	return a, nil

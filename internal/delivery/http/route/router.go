@@ -47,6 +47,7 @@ func (r *Router) setupPageRoutes() {
 	r.Engine.GET("/new_income", r.pageHandler.NewIncome)
 	r.Engine.GET("/income", r.pageHandler.GetAllIncome)
 	r.Engine.GET("/new_expense", r.pageHandler.NewExpense)
+	r.Engine.GET("/expenses", r.pageHandler.GetAllExpenses)
 }
 
 func (r *Router) setupAPIRoutes() {

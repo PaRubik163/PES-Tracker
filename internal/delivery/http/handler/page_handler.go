@@ -43,3 +43,7 @@ func (pgh *PageHandler) GetAllIncome(c *gin.Context) {
 func (pgh *PageHandler) NewExpense(c *gin.Context) {
 	c.HTML(http.StatusOK, "new_expense.html", nil)
 }
+
+func (pgh *PageHandler) GetAllExpenses(c *gin.Context) {
+	c.HTML(http.StatusOK, "all_expenses.html", nil)
+}

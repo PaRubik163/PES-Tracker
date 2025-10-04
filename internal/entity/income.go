@@ -13,7 +13,7 @@ type Income struct{
 	Amount decimal.Decimal	   `gorm:"type:numeric(12,2);notNull;column:amount" json:"amount"`
 	Date time.Time	   `gorm:"type:date;notNull;column:income_date" json:"income_date"`
 	UserID	int		   `gorm:"notNull;column:user_id" json:"user_id`	
-	User 	User       `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
+	User 	User       `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE" json:"-"`
 }
 
 func (in *Income) Validate() error {

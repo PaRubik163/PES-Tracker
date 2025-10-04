@@ -10,7 +10,7 @@ import (
 type Subscription struct {
 	ID              int       `gorm:"primaryKey;column:id" json:"id"`
 	UserID			int		  `gorm:"notNull;column:user_id" json:"user_id`	
-	User 			User      `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
+	User 			User      `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE" json:"-"`
 	Name            string    `gorm:"notNull;column:subscription_name" json:"name"`
 	Amount          decimal.Decimal   `gorm:"type:numeric(12,2);column:amount" json:"amount"`
 	Url             string    `gorm:"column:url" json:"url"`

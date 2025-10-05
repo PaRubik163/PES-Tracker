@@ -367,7 +367,7 @@ Authorization: Bearer <токен, полученный при авториза�
 
 ***Удаление записи о подписке***
 ```http
-GET http://localhost:8080/api/v1/subscription/:id
+DELETE http://localhost:8080/api/v1/subscription/:id
 Content-Type: application/json
 Authorization: Bearer <токен, полученный при авторизации>
 ```
@@ -389,7 +389,7 @@ Authorization: Bearer <токен, полученный при авториза�
 
 ***Удаление записи о доходе***
 ```http
-GET http://localhost:8080/api/v1/subscription/:id
+DELETE http://localhost:8080/api/v1/income/:id
 Content-Type: application/json
 Authorization: Bearer <токен, полученный при авторизации>
 ```
@@ -411,7 +411,7 @@ Authorization: Bearer <токен, полученный при авториза�
 
 ***Удаление записи о трате***
 ```http
-GET http://localhost:8080/api/v1/expense/:id
+DELETE http://localhost:8080/api/v1/expense/:id
 Content-Type: application/json
 Authorization: Bearer <токен, полученный при авторизации>
 ```

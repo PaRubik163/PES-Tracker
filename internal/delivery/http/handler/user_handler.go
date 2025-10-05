@@ -66,9 +66,6 @@ func (uh *UserHandler) HandlerLogin(c *gin.Context) {
 		"user": gin.H{
 			"id": user.ID,
 			"login": user.Login,
-			"subscriptions_quantity": user.SubscriptionsQuantity,
-			"expenses_month": user.ExpensesMonth,
-			"income_month": user.IncomeMonth,
 			"create_session_at": user.CreateSessionAt,
 		},
 	})

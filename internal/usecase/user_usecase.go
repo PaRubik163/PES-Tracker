@@ -81,21 +81,6 @@ func (us *UserUseCase) Login(login, pass string) (*dto.UserSession, error) {
 		return nil, err
 	}
 
-	subQuntity, err := us.userRepo.CountUsersSubscription(login)
-	if err != nil{
-		return nil, err
-	}
-
-	incomeQuantity, err := us.userRepo.CountUsersIncome(login)
-	if err != nil{
-		return nil, err
-	}
-
-	expensesQuantity, err := us.userRepo.CountUserExpenses(login)
-	if err != nil{
-		return nil, err
-	}
-
 	if err := us.userRepo.UpdateLogin(login); err != nil{
 		return nil, err
 	}
@@ -104,9 +89,6 @@ func (us *UserUseCase) Login(login, pass string) (*dto.UserSession, error) {
 		ID: userDB.ID,
 		Login: userDB.Login,
 		Token: resp.Token,
-		SubscriptionsQuantity: subQuntity,
-		ExpensesMonth: expensesQuantity,
-		IncomeMonth: incomeQuantity,
 		CreateSessionAt: time.Now(),
 	}
 
@@ -135,6 +117,25 @@ func (us *UserUseCase) GetMe(uuid string) (*dto.UserSession, error) {
 	if err != nil{
 		return nil, err
 	}
+
+	subQuntity, err := us.userRepo.CountUsersSubscription(userSession.Login)
+	if err != nil{
+		return nil, err
+	}
+
+	incomeQuantity, err := us.userRepo.CountUsersIncome(userSession.Login)
+	if err != nil{
+		return nil, err
+	}
+
+	expensesQuantity, err := us.userRepo.CountUserExpenses(userSession.Login)
+	if err != nil{
+		return nil, err
+	}
+
+	userSession.SubscriptionsQuantity = subQuntity
+	userSession.IncomeMonth = incomeQuantity
+	userSession.ExpensesMonth = expensesQuantity
 
 	return userSession, nil
 }

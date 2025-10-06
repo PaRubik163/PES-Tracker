@@ -39,31 +39,28 @@ func (ur *UserRepository) UpdateLogin(login string) error {
 }
 
 //counting quantity users subscriptions
-func (ur *UserRepository) CountUsersSubscription(login string) (int64,error) {
+func (ur *UserRepository) CountUsersSubscription(id int) (int64,error) {
 	var count int64
-	return count, ur.db.Table("subscriptions").
-    			 Joins("JOIN users ON subscriptions.user_id = users.id").
-    			 Where("users.login = ?", login).
+	return count, ur.db.Table("subscriptions").	
+    			 Where("subscriptions.user_id = ?", id).
     			 Count(&count).Error
 }
 
 //counting quantity users income
-func (ur *UserRepository) CountUsersIncome(login string) (decimal.Decimal, error) {
+func (ur *UserRepository) CountUsersIncome(id int) (decimal.Decimal, error) {
 	var amount decimal.Decimal
 	return amount, ur.db.Table("incomes").
-						Joins("JOIN users ON incomes.user_id = users.id").
-						Where("users.login = ?", login).
-						Select("COALESCE(SUM(incomes.amount), 0)").
+						Where("income_date >= date_trunc('month', CURRENT_DATE) AND income_date < (date_trunc('month', CURRENT_DATE) + interval '1 month') AND user_id = ?", id).
+						Select("COALESCE(SUM(amount), 0)").
 						Scan(&amount).Error
 						
 }
 
 //counting quantity user expenses
-func (ur *UserRepository) CountUserExpenses(login string) (decimal.Decimal, error) {
+func (ur *UserRepository) CountUserExpenses(id int) (decimal.Decimal, error) {
 	var amount decimal.Decimal
 	return amount, ur.db.Table("expenses").
-						 Joins("JOIN users ON expenses.user_id = users.id").
-						 Where("users.login = ?", login).
-						 Select("COALESCE(SUM(expenses.amount), 0)").
+						 Where("expense_date >= date_trunc('month', CURRENT_DATE) AND expense_date < (date_trunc('month', CURRENT_DATE) + interval '1 month') AND user_id = ?", id).
+						 Select("COALESCE(SUM(amount), 0)").
 						 Scan(&amount).Error
 }

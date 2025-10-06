@@ -40,3 +40,7 @@ func (expUseCase *ExpenseUseCase) DeleteExpense(expenseID, userID int) error {
 
 	return nil
 }
+
+func (expUseCase *ExpenseUseCase) GetExpensesByCategory(userID int) ([]*entity.CategorySum, error) {
+	return expUseCase.expenseRepository.GetExpensesByCategory(userID)
+}

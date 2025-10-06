@@ -77,6 +77,7 @@ func (r *Router) setupAPIRoutes() {
 			auth.POST("/new_expense", r.expenseHandler.HandlerAdd)
 			auth.GET("/expenses", r.expenseHandler.HandlerGetAll)
 			auth.DELETE("/expense/:id", r.expenseHandler.HandlerDeleteExpense)
+			auth.GET("/expenses/categories", r.expenseHandler.HandlerGetExpensesByCategory)
         }
     }
 }

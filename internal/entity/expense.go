@@ -17,6 +17,11 @@ type Expense struct{
 	User 	User        `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE" json:"-"`
 } 
 
+type CategorySum struct{
+	Category string       `json:"category"`
+	Total decimal.Decimal `json:"total"`
+}
+
 func (exp *Expense) Validate() error {
 	if exp.Title == ""{
 		return errors.New("name cannot be empty")

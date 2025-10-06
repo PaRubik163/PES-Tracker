@@ -86,3 +86,21 @@ func (expH *ExpenseHandler) HandlerDeleteExpense(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message" : "expense successful deleted"})
 }
+
+func (expH *ExpenseHandler) HandlerGetExpensesByCategory(c *gin.Context) {
+	userID, ok := c.Get("user_id")
+
+	if !ok{
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "user not authorized"})
+		return
+	}
+
+	result, err := expH.expenseUseCase.GetExpensesByCategory(userID.(int))
+
+	if err != nil{
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, result)
+}

@@ -23,7 +23,7 @@ func (expUseCase *ExpenseUseCase) AddExpense(expense *entity.Expense) error {
 	return nil
 }
 
-func (expUseCase *ExpenseUseCase) GetAllExpenses(userID int) ([]*entity.Expense,error) {
+func (expUseCase *ExpenseUseCase) GetAllExpenses(userID int) ([]entity.Expense,error) {
 	expenses, err := expUseCase.expenseRepository.GetAll(userID)
 
 	if err != nil{
@@ -39,4 +39,8 @@ func (expUseCase *ExpenseUseCase) DeleteExpense(expenseID, userID int) error {
 	}
 
 	return nil
+}
+
+func (expUseCase *ExpenseUseCase) GetExpensesByCategory(userID int) ([]entity.CategorySum, error) {
+	return expUseCase.expenseRepository.GetExpensesByCategory(userID)
 }

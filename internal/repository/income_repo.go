@@ -23,8 +23,8 @@ func (inRepo *IncomeRepository) Create(income *entity.Income) error{
 	return inRepo.db.Create(income).Error
 }
 
-func (inRepo *IncomeRepository) GetAll(userID int) ([]*entity.Income, error) {
-	var income []*entity.Income
+func (inRepo *IncomeRepository) GetAll(userID int) ([]entity.Income, error) {
+	var income []entity.Income
 
 	if err := inRepo.db.Where("user_id = ?", userID).Find(&income).Error; err != nil{
 		return nil, err

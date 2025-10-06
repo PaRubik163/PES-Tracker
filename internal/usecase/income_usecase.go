@@ -23,7 +23,7 @@ func (inUseCase *IncomeUseCase) AddIncome(income *entity.Income) error {
 	return nil
 }
 
-func (inUseCase *IncomeUseCase) GetAllIncome(userID int) ([]*entity.Income, error) {
+func (inUseCase *IncomeUseCase) GetAllIncome(userID int) ([]entity.Income, error) {
 	income, err := inUseCase.incomeRepo.GetAll(userID)
 
 	if err != nil{

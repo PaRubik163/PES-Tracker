@@ -88,3 +88,25 @@ h2 {
 .value-link:hover {
     color: #ff4081;
 }
+
+.chart-card {
+    background: linear-gradient(145deg, #000000, #000000);
+    border-radius: 20px;
+    box-shadow: 0 0 50px rgb(239, 86, 214);
+    padding: 25px;
+    max-width: 450px;
+    margin: 20px auto;
+    transition: transform 0.2s;
+}
+
+.chart-card:hover {
+    transform: translateY(-5px);
+}
+
+.chart-card h3 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #ffffff;
+    font-size: 1.5rem;
+    color: #7CFC00;
+}

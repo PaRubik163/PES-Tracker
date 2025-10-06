@@ -118,17 +118,17 @@ func (us *UserUseCase) GetMe(uuid string) (*dto.UserSession, error) {
 		return nil, err
 	}
 
-	subQuntity, err := us.userRepo.CountUsersSubscription(userSession.Login)
+	subQuntity, err := us.userRepo.CountUsersSubscription(userSession.ID)
 	if err != nil{
 		return nil, err
 	}
 
-	incomeQuantity, err := us.userRepo.CountUsersIncome(userSession.Login)
+	incomeQuantity, err := us.userRepo.CountUsersIncome(userSession.ID)
 	if err != nil{
 		return nil, err
 	}
 
-	expensesQuantity, err := us.userRepo.CountUserExpenses(userSession.Login)
+	expensesQuantity, err := us.userRepo.CountUserExpenses(userSession.ID)
 	if err != nil{
 		return nil, err
 	}

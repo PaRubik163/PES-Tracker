@@ -11,17 +11,20 @@ body {
 
 .container {
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row; /* Бок о бок */
+    align-items: flex-start;
     justify-content: center;
+    gap: 40px; /* Отступ между блоками */
 }
 
 .main-title {
+    position: absolute;
+    top: 30px;
+    width: 100%;
     text-align: center;
     font-size: 48px;
     font-weight: bold;
     color: #7CFC00;
-    margin-bottom: 20px;
     text-shadow: 0 0 15px rgba(124, 252, 0, 0.6);
 }
 
@@ -41,6 +44,12 @@ body {
 #profileInfo strong {
     color: #39ff14;
 }
+
+#profileInfo, .chart-card {
+    flex: 1;
+    max-width: 400px;
+}
+
 
 h2 {
     text-align: center;

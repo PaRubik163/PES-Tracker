@@ -3,9 +3,11 @@ package middleware
 import (
 	"net/http"
 	"strings"
+	"time"
 	jwt "tracker/pkg/jwt"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
 func AuthMiddleware(jwt *jwt.Jwt) gin.HandlerFunc {
@@ -31,5 +33,53 @@ func AuthMiddleware(jwt *jwt.Jwt) gin.HandlerFunc {
 		c.Set("uuid", session.ID)
 		c.Set("user_id", session.UserID)
 		c.Next()
+	}
+}
+
+func LoggerMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		start := time.Now()
+
+		c.Next()
+
+		status := c.Writer.Status()
+
+		userID, ok := c.Get("user_id")
+
+		if !ok{
+			userID = "none"
+		}
+
+		if strings.HasPrefix(c.Request.URL.Path, "/api"){
+			entry := logrus.WithFields(logrus.Fields{
+				"user_id": userID,
+				"path": c.Request.URL.Path,
+				"method": c.Request.Method,
+				"status": status,
+				"time": start,
+				"latency": time.Since(start),
+			})
+
+			switch {
+			case status >= 500:
+				entry.Error("Internal server error")
+			case status >= 400:
+				entry.Warn("Client error")
+			default:
+				entry.Info("Request successed")
+			}
+		}
+
+		if !strings.HasPrefix(c.Request.URL.Path, "/static"){
+			entry := logrus.WithFields(logrus.Fields{
+				"path": c.Request.URL.Path,
+				"method": c.Request.Method,
+				"status": c.Writer.Status(),
+				"time": start,
+				"latency": time.Since(start),
+				"error": c.Errors.String(),
+			})
+			entry.Info("Frontend Request")
+		}
 	}
 }

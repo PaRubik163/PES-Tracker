@@ -22,6 +22,9 @@ func NewRouter(ph *handler.PageHandler, uh *handler.UserHandler, sh *handler.Sub
 	router := gin.Default()
 	router.LoadHTMLGlob("./frontend/templates/*")
 	router.Static("/static", "./frontend/static")
+
+	router.Use(middleware.LoggerMiddleware())
+
 	return &Router{
 		Engine: router,
 		pageHandler: ph,

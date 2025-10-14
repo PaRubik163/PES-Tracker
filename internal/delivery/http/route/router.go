@@ -23,6 +23,8 @@ func NewRouter(ph *handler.PageHandler, uh *handler.UserHandler, sh *handler.Sub
 	router.LoadHTMLGlob("./frontend/templates/*")
 	router.Static("/static", "./frontend/static")
 
+	router.Use(middleware.LoggerMiddleware())
+
 	return &Router{
 		Engine: router,
 		pageHandler: ph,
@@ -57,7 +59,6 @@ func (r *Router) setupAPIRoutes() {
 	})
 
     api := r.Engine.Group("/api/v1")
-	api.Use(middleware.LoggerMiddleware())
     {
         api.POST("/register", r.userHandler.HandlerRegister)
         api.POST("/login", r.userHandler.HandlerLogin)

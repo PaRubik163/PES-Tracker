@@ -45,26 +45,41 @@ func LoggerMiddleware() gin.HandlerFunc {
 		status := c.Writer.Status()
 
 		userID, ok := c.Get("user_id")
+
 		if !ok{
 			userID = "none"
 		}
 
-		entry := logrus.WithFields(logrus.Fields{
-			"user_id": userID,
-			"path": c.Request.URL.Path,
-			"method": c.Request.Method,
-			"status": status,
-			"time": start.Format("2006-01-02 15:04:05"),
-			"latency": time.Since(start),
-		})
+		if strings.HasPrefix(c.Request.URL.Path, "/api"){
+			entry := logrus.WithFields(logrus.Fields{
+				"user_id": userID,
+				"path": c.Request.URL.Path,
+				"method": c.Request.Method,
+				"status": status,
+				"time": start,
+				"latency": time.Since(start),
+			})
 
-		switch {
-		case status >= 500:
-			entry.Warn("Internal server error")
-		case status >= 400:
-			entry.Info("Client error")
-		default:
-			entry.Info("Request successed")
+			switch {
+			case status >= 500:
+				entry.Error("Internal server error")
+			case status >= 400:
+				entry.Warn("Client error")
+			default:
+				entry.Info("Request successed")
+			}
+		}
+
+		if !strings.HasPrefix(c.Request.URL.Path, "/static"){
+			entry := logrus.WithFields(logrus.Fields{
+				"path": c.Request.URL.Path,
+				"method": c.Request.Method,
+				"status": c.Writer.Status(),
+				"time": start,
+				"latency": time.Since(start),
+				"error": c.Errors.String(),
+			})
+			entry.Info("Frontend Request")
 		}
 	}
 }

@@ -68,6 +68,7 @@ func LoggerMiddleware() gin.HandlerFunc {
 			default:
 				entry.Info("Request successed")
 			}
+			return
 		}
 
 		if !strings.HasPrefix(c.Request.URL.Path, "/static"){

@@ -53,6 +53,7 @@ func LoggerMiddleware() gin.HandlerFunc {
 		if strings.HasPrefix(c.Request.URL.Path, "/api"){
 			entry := logrus.WithFields(logrus.Fields{
 				"user_id": userID,
+				"user_IP": c.ClientIP(),
 				"path": c.Request.URL.Path,
 				"method": c.Request.Method,
 				"status": status,
@@ -68,6 +69,7 @@ func LoggerMiddleware() gin.HandlerFunc {
 			default:
 				entry.Info("Request successed")
 			}
+			return
 		}
 
 		if !strings.HasPrefix(c.Request.URL.Path, "/static"){

@@ -31,6 +31,7 @@ func (us *UserUseCase) Register(login, pass string) error {
 		Password: pass,
 		RegisteredAt: time.Now(),
 		LastLogin: time.Now(),
+		Role: "user",
 	}
 
 	if err := user.CheckLogin(user.Login); err != nil{
@@ -76,7 +77,7 @@ func (us *UserUseCase) Login(login, pass string) (*dto.UserSession, error) {
 		return nil, errors.New("invalid login or password")
 	}
 
-	resp, err := us.jwtService.GenerateToken(userDB.ID)
+	resp, err := us.jwtService.GenerateToken(userDB.ID, userDB.Role)
 	if err != nil{
 		return nil, err
 	}
@@ -90,6 +91,7 @@ func (us *UserUseCase) Login(login, pass string) (*dto.UserSession, error) {
 		Login: userDB.Login,
 		Token: resp.Token,
 		CreateSessionAt: time.Now(),
+		Role: resp.UserRole,
 	}
 
 	err = us.redisRepo.SaveUser(resp.ID, session)
@@ -138,4 +140,8 @@ func (us *UserUseCase) GetMe(uuid string) (*dto.UserSession, error) {
 	userSession.ExpensesMonth = expensesQuantity
 
 	return userSession, nil
+}
+
+func (us *UserUseCase) GettAllUsers() ([]entity.User, error){
+	return us.userRepo.GetAllUsers()
 }

@@ -14,6 +14,7 @@ type User struct{
 	Password string			`gorm:"notNull;column:password"`
 	RegisteredAt time.Time  `gorm:"notNull;column:registered_at"`
 	LastLogin time.Time 	`gorm:"notNull;column:last_login"`
+	Role string				`gorm:"notNUll;column:role;default:user"`
 }
 
 func (u *User) CheckLogin(login string) error {

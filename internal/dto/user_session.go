@@ -10,6 +10,7 @@ type UserSession struct{
 	ID int									`json:"id"`
 	Login string 							`json:"login"`
 	Token string							`json:"token"`
+	Role string 							`json:"user_role"`
 	SubscriptionsQuantity int64 			`json:"subscriptions_quantity"`
 	ExpensesMonth decimal.Decimal			`json:"expenses_month"`
 	IncomeMonth decimal.Decimal				`json:"income_month"`

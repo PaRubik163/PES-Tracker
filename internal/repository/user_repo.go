@@ -64,3 +64,9 @@ func (ur *UserRepository) CountUserExpenses(id int) (decimal.Decimal, error) {
 						 Select("COALESCE(SUM(amount), 0)").
 						 Scan(&amount).Error
 }
+
+func (ur *UserRepository) GetAllUsers() ([]entity.User, error) {
+	var users []entity.User
+
+	return users, ur.db.Find(&users).Error
+}

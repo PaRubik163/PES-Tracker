@@ -32,6 +32,20 @@ func AuthMiddleware(jwt *jwt.Jwt) gin.HandlerFunc {
 
 		c.Set("uuid", session.ID)
 		c.Set("user_id", session.UserID)
+		c.Set("user_role", session.UserRole)
+		c.Next()
+	}
+}
+
+func RoleMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		userRole := c.GetString("user_role")
+
+		if userRole == "" || userRole != "admin"{
+			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "Access denied"})
+			return
+		}
+
 		c.Next()
 	}
 }

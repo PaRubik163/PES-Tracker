@@ -11,6 +11,7 @@ import (
 type claims struct {
 	ID string		`json:"uuid"`
 	UserID int 	`json:"user_id"`
+	UserRole string	`json:"user_role"`
 	jwt.RegisteredClaims
 }
 
@@ -22,16 +23,18 @@ type TokenResponse struct {
 	Token string
 	ID string
 	UserID int
+	UserRole string
 }
 
 func NewJwt(secretKey []byte) *Jwt {
 	return &Jwt{SecretKey: secretKey}
 }
 
-func (j *Jwt) GenerateToken(userID int) (*TokenResponse, error) {
+func (j *Jwt) GenerateToken(userID int, userRole string) (*TokenResponse, error) {
 	claims := claims{
 		ID: uuid.New().String(),
 		UserID: userID,
+		UserRole: userRole,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
@@ -48,6 +51,7 @@ func (j *Jwt) GenerateToken(userID int) (*TokenResponse, error) {
 	return &TokenResponse{
 		Token: strToken,
 		ID: claims.ID,
+		UserRole: claims.UserRole,
 	}, nil
 }
 

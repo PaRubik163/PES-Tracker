@@ -12,13 +12,14 @@ type Router struct{
 	Engine *gin.Engine
 	pageHandler *handler.PageHandler
 	userHandler *handler.UserHandler
+	adminHander *handler.AdminHandler
 	subscriptionHandler *handler.SubscriptionHandler
 	incomeHandler *handler.IncomeHandler
 	expenseHandler *handler.ExpenseHandler
 	jwtService *jwt.Jwt
 }
 
-func NewRouter(ph *handler.PageHandler, uh *handler.UserHandler, sh *handler.SubscriptionHandler,inH *handler.IncomeHandler, expH *handler.ExpenseHandler,jwt *jwt.Jwt) *Router {
+func NewRouter(ph *handler.PageHandler, uh *handler.UserHandler,adH *handler.AdminHandler, sh *handler.SubscriptionHandler,inH *handler.IncomeHandler, expH *handler.ExpenseHandler,jwt *jwt.Jwt) *Router {
 	router := gin.Default()
 	router.LoadHTMLGlob("./frontend/templates/*")
 	router.Static("/static", "./frontend/static")
@@ -29,6 +30,7 @@ func NewRouter(ph *handler.PageHandler, uh *handler.UserHandler, sh *handler.Sub
 		Engine: router,
 		pageHandler: ph,
 		userHandler: uh,
+		adminHander: adH,
 		subscriptionHandler: sh,
 		incomeHandler: inH,
 		expenseHandler: expH,
@@ -82,5 +84,11 @@ func (r *Router) setupAPIRoutes() {
 			auth.DELETE("/expense/:id", r.expenseHandler.HandlerDeleteExpense)
 			auth.GET("/expenses/categories", r.expenseHandler.HandlerGetExpensesByCategory)
         }
+
+		admin := api.Group("/admin")
+		admin.Use(middleware.AuthMiddleware(r.jwtService), middleware.RoleMiddleware())
+		{
+			admin.GET("/users", r.adminHander.GetAllUsersHandler)
+		}
     }
 }

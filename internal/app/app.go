@@ -23,6 +23,7 @@ type App struct{
 	UserRepo *repository.UserRepository
 	UserUseCase *usecase.UserUseCase
 	UserHandler *handler.UserHandler
+	AdminHandler *handler.AdminHandler
 	SubscriptionRepo *repository.SubscriptionRepo
 	SubscriptionUseCase *usecase.SubscriptionUseCase
 	SubscriptionHandler *handler.SubscriptionHandler
@@ -64,6 +65,9 @@ func NewApp(c *config.Config) (*App, error) {
 	userUseCase := usecase.NewUserUseCase(userRepo, redisRepo, jwtService)
 	userHandler := handler.NewUserHandler(userUseCase)
 
+	//admin section
+	adminHandler := handler.NewAdminHandler(userUseCase)
+
 	//subscription section
 	subRepo, err := repository.NewSubscriptionRepo(db)
 
@@ -93,8 +97,9 @@ func NewApp(c *config.Config) (*App, error) {
 
 	expUseCase := usecase.NewExpenseUseCase(expRepo)
 	expHandler := handler.NewExpenseHandler(expUseCase)
+
 	//gin section
-	router := route.NewRouter(pgh, userHandler, subHandler, inHandler, expHandler, jwtService) 
+	router := route.NewRouter(pgh, userHandler, adminHandler, subHandler, inHandler, expHandler, jwtService) 
 	router.SetupRouter()
 	
 	a := &App{
@@ -106,6 +111,7 @@ func NewApp(c *config.Config) (*App, error) {
 		UserRepo: userRepo,
 		UserUseCase: userUseCase,
 		UserHandler: userHandler,
+		AdminHandler: adminHandler,
 		SubscriptionRepo: subRepo,
 		SubscriptionUseCase: subUseCase,
 		SubscriptionHandler: subHandler,

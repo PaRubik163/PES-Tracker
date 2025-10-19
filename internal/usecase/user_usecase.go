@@ -145,3 +145,7 @@ func (us *UserUseCase) GetMe(uuid string) (*dto.UserSession, error) {
 func (us *UserUseCase) GettAllUsers() ([]entity.User, error){
 	return us.userRepo.GetAllUsers()
 }
+
+func (us *UserUseCase) GetUserByID(userID int) (entity.User, error){
+	return us.userRepo.GetUserByID(userID)
+}

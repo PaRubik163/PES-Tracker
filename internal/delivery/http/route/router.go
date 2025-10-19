@@ -89,6 +89,7 @@ func (r *Router) setupAPIRoutes() {
 		admin.Use(middleware.AuthMiddleware(r.jwtService), middleware.RoleMiddleware())
 		{
 			admin.GET("/users", r.adminHander.GetAllUsersHandler)
+			admin.GET("/user/:id", r.adminHander.GetUserByIDHandler)
 		}
     }
 }

@@ -20,7 +20,7 @@ type Config struct {
 }
 
 func NewConfig() *Config {
-	err := godotenv.Load()
+	err := godotenv.Load("./config/.env")
 
 	if err != nil{
 		logrus.Fatal("Failed to open .env")

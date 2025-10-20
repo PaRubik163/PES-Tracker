@@ -1,0 +1,17 @@
+app:
+  addr: ${GIN_ADDR}
+
+database:
+  host: ${DB_HOST}
+  port: ${DB_PORT}
+  user: ${DB_USER}
+  pass: ${DB_PASS}
+  name: ${DB_NAME}
+
+redis:
+  host: ${REDIS_HOST}
+  port: ${REDIS_PORT}
+  pass: ${REDIS_PASS}
+
+jwt:
+  key: ${JWT_KEY}

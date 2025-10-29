@@ -1,11 +1,12 @@
 package route
 
 import (
-	"tracker/internal/delivery/http/handler"
-	"tracker/pkg/jwt"
-	"tracker/internal/delivery/middleware"
-	"github.com/gin-gonic/gin"
 	"net/http"
+	"tracker/internal/delivery/http/handler"
+	"tracker/internal/delivery/middleware"
+	"tracker/pkg/jwt"
+
+	"github.com/gin-gonic/gin"
 )
 
 type Router struct{
@@ -19,7 +20,15 @@ type Router struct{
 	jwtService *jwt.Jwt
 }
 
-func NewRouter(ph *handler.PageHandler, uh *handler.UserHandler,adH *handler.AdminHandler, sh *handler.SubscriptionHandler,inH *handler.IncomeHandler, expH *handler.ExpenseHandler,jwt *jwt.Jwt) *Router {
+func NewRouter(
+	ph *handler.PageHandler, 
+	uh *handler.UserHandler,
+	adH *handler.AdminHandler, 
+	sh *handler.SubscriptionHandler,
+	inH *handler.IncomeHandler, 
+	expH *handler.ExpenseHandler,
+	jwt *jwt.Jwt,
+	) *Router {
 	router := gin.Default()
 	router.LoadHTMLGlob("./frontend/templates/*")
 	router.Static("/static", "./frontend/static")

@@ -5,6 +5,7 @@ import (
 	"tracker/internal/config"
 	"tracker/internal/delivery/http/handler"
 	"tracker/internal/delivery/http/route"
+	"tracker/internal/logger"
 	"tracker/internal/repository"
 	"tracker/internal/usecase"
 	jwt "tracker/pkg/jwt"
@@ -34,9 +35,10 @@ type App struct{
 	ExpenseUseCase *usecase.ExpenseUseCase
 	ExpenseHandler *handler.ExpenseHandler
 	Router *route.Router
+	LoggerAdapter *logger.Adapter
 }
 
-func NewApp(c *config.Config) (*App, error) {
+func NewApp(c *config.Config, loggerAdapter *logger.Adapter) (*App, error) {
 
 	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", 
 						c.DataBaseHost, 
@@ -62,7 +64,7 @@ func NewApp(c *config.Config) (*App, error) {
 		return nil, err
 	}
 
-	userUseCase := usecase.NewUserUseCase(userRepo, redisRepo, jwtService)
+	userUseCase := usecase.NewUserUseCase(userRepo, redisRepo, jwtService, loggerAdapter)
 	userHandler := handler.NewUserHandler(userUseCase)
 
 	//admin section
@@ -75,7 +77,7 @@ func NewApp(c *config.Config) (*App, error) {
 		return nil, err
 	}
 	
-	subUseCase := usecase.NewSubscriptionUseCase(subRepo)
+	subUseCase := usecase.NewSubscriptionUseCase(subRepo, loggerAdapter)
 	subHandler := handler.NewSubscriptionHandler(subUseCase)
 
 	//income section
@@ -85,7 +87,7 @@ func NewApp(c *config.Config) (*App, error) {
 		return nil, err
 	}
 
-	inUseCase := usecase.NewIncomeUseCase(inRepo)
+	inUseCase := usecase.NewIncomeUseCase(inRepo, loggerAdapter)
 	inHandler := handler.NewIncomeHandler(inUseCase)
 
 	//expense section
@@ -95,7 +97,7 @@ func NewApp(c *config.Config) (*App, error) {
 		return nil, err
 	}
 
-	expUseCase := usecase.NewExpenseUseCase(expRepo)
+	expUseCase := usecase.NewExpenseUseCase(expRepo, loggerAdapter)
 	expHandler := handler.NewExpenseHandler(expUseCase)
 
 	//gin section
@@ -122,6 +124,7 @@ func NewApp(c *config.Config) (*App, error) {
 		ExpenseUseCase: expUseCase,
 		ExpenseHandler: expHandler,
 		Router: router,
+		LoggerAdapter: loggerAdapter,
 	}
 	return a, nil
 }

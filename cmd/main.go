@@ -1,8 +1,11 @@
 package main
 
 import (
+	"fmt"
+	"log"
 	"tracker/internal/app"
 	"tracker/internal/config"
+	"tracker/internal/logger"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -18,7 +21,16 @@ func main(){
 	gin.SetMode(gin.ReleaseMode)
 
 	conf := config.NewConfig()
-	application, err := app.NewApp(conf)
+	addr := fmt.Sprintf("%s:%s", conf.GRPCHost, conf.GRPPCPort)
+	
+	grpcClient, err := logger.NewClient(addr)
+	loggerAdapter := logger.NewAdapter(grpcClient)
+
+	if err != nil{
+		log.Fatal(err)
+	}
+
+	application, err := app.NewApp(conf, loggerAdapter)
 
 	if err != nil{
 		logrus.Fatal(err)

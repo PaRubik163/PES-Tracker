@@ -5,7 +5,6 @@ import (
 	"strings"
 	"time"
 	jwt "tracker/pkg/jwt"
-
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )

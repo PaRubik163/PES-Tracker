@@ -70,3 +70,9 @@ func (ur *UserRepository) GetAllUsers() ([]entity.User, error) {
 
 	return users, ur.db.Find(&users).Error
 }
+
+func (ur *UserRepository) GetUserByID(userID int) (*entity.User, error) {
+	var user *entity.User
+	
+	return user, ur.db.Where("id = ?", userID).First(&user).Error
+}

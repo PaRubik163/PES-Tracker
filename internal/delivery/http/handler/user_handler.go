@@ -104,6 +104,7 @@ func (uh *UserHandler) HandlerGetMe(c *gin.Context){
 		"id": userSession.ID,
 		"login": userSession.Login,
 		"token": userSession.Token,
+		"role": userSession.Role,
 		"subscriptions_quantity": userSession.SubscriptionsQuantity,
 		"expenses_month": userSession.ExpensesMonth,
 		"income_month": userSession.IncomeMonth,

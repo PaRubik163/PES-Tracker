@@ -8,6 +8,12 @@ type Adapter struct{
 	client *Client
 }
 
+const(
+	Internal = "500 INTERNAL"
+	Ok = "200 OK"
+	Created = "201 CREATED"
+)
+
 func NewAdapter(client *Client) *Adapter {
 	return &Adapter{
 		client: client,
